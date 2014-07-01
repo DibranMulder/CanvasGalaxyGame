@@ -1,0 +1,4 @@
+D:\Playground\Game\Game\Game\bin\Game.dll
+D:\Playground\Game\Game\Game\bin\Game.pdb
+D:\Playground\Game\Game\Game\obj\Debug\Game.dll
+D:\Playground\Game\Game\Game\obj\Debug\Game.pdb
