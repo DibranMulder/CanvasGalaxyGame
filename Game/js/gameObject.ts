@@ -1,46 +1,15 @@
 ﻿class GameObject {
-    private _avatarX: number = 400;
-    public set avatarX(value: number) {
-        if (value < 0) {
-            this._avatarX = 0;
-        } else if (value > (550)) {
-            this._avatarX = 550;
-        } else {
-            this._avatarX = value;
-        }
-    }
-
-    public get avatarX(): number {
-        return this._avatarX;
-    }
-
-    private _avatarY: number = 400;
-    public set avatarY(value: number) {
-        if (value < 0) {
-            this._avatarY = 0;
-        } else if (value > (550)) {
-            this._avatarY = 550;
-        } else {
-            this._avatarY = value;
-        }
-    }
-
-    public get avatarY(): number {
-        return this._avatarY;
-    }
-
-    public velY: number = 0;
-    public velX: number = 0;
+    private velY: number = 0;
+    private velX: number = 0;
 
     public maxSpeed = 10;
 
-    public GameObject() {
-
+    constructor(public xPosition: number, public yPosition: number, public width: number, public height: number) {
     }
 
     public handleMovement() {
-        this.avatarX += this.velX;
-        this.avatarY += this.velY;
+        this.xPosition += this.velX;
+        this.yPosition += this.velY;
     }
 
     public handleKeys(keys: boolean[]) {

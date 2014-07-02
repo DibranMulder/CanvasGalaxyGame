@@ -26,11 +26,32 @@
             var object = this.objects[i];
             object.handleKeys(this.keys);
             object.handleMovement();
+            this.checkBounds(object);
             context.fillStyle = "#37AFFA";
-            context.fillRect(object.avatarX, object.avatarY, 50, 50);
+            context.fillRect(object.xPosition, object.yPosition, object.width, object.height);
         }
 
         requestAnimationFrame(this.gameLoop.bind(this));
+    }
+
+    public checkBounds(object: GameObject) {
+        if (object.xPosition < 0) {
+            object.xPosition = 0;
+        } else {
+            var maxX = 600 - object.width;
+            if (object.xPosition > maxX) {
+                object.xPosition = maxX;
+            }
+        }
+
+        if (object.yPosition < 0) {
+            object.yPosition = 0;
+        } else {
+            var maxY = 600 - object.height;
+            if (object.yPosition > maxY) {
+                object.yPosition = maxY;
+            }
+        }
     }
 }
 
@@ -42,7 +63,7 @@ window.onload = function init() {
     window.requestAnimationFrame = requestAnimationFrame;
 
     var game = new Game();
-    game.objects.push(new GameObject());
+    game.objects.push(new GameObject(400, 400, 50, 50));
     game.walls.push(new Wall(150, 350, 20, 200));
 
     window.addEventListener("keydown", function (e) {
