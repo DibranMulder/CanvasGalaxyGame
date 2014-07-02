@@ -14,8 +14,8 @@
         set: function (value) {
             if (value < 0) {
                 this._avatarX = 0;
-            } else if (value > (Game.xBound - 50)) {
-                this._avatarX = Game.xBound - 50;
+            } else if (value > (550)) {
+                this._avatarX = 550;
             } else {
                 this._avatarX = value;
             }
@@ -32,8 +32,8 @@
         set: function (value) {
             if (value < 0) {
                 this._avatarY = 0;
-            } else if (value > (Game.yBound - 50)) {
-                this._avatarY = Game.yBound - 50;
+            } else if (value > (550)) {
+                this._avatarY = 550;
             } else {
                 this._avatarY = value;
             }
