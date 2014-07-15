@@ -25,7 +25,7 @@
         for (var i = 0; i < this.objects.length; i++) {
             var object = this.objects[i];
             object.handleKeys(this.keys);
-            object.handleMovement();
+            object.handleMovement(this.walls[0]);
             this.checkBounds(object);
             context.fillStyle = "#37AFFA";
             context.fillRect(object.xPosition, object.yPosition, object.width, object.height);
