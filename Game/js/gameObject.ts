@@ -8,54 +8,16 @@
     }
 
     public handleMovement(wall: Wall): boolean {
-        var xCol: boolean = false;
-        var yCol: boolean = false;
+        this.xPosition += this.velX;
+        this.yPosition += this.velY;
 
-        var newXFromPosition = this.xPosition += this.velX;
-        var newXToPosition = newXFromPosition + this.width;
-        if (this.velX > 0) {
-            if (newXToPosition > wall.x && newXToPosition < (wall.x + wall.width)) {
-                xCol = true;
-            }
-        } else {
-            if (newXFromPosition > wall.x && newXFromPosition < (wall.x + wall.width)) {
-                xCol = true;
-            }
+        if (this.xPosition < wall.x + wall.width &&
+            this.xPosition + this.width > wall.x &&
+            this.yPosition < wall.y + wall.height &&
+            this.height + this.yPosition > wall.y) {
+            return true;
         }
-
-        var newYFromPosition = this.yPosition += this.velY;
-        var newYToPosition = newYFromPosition + this.height;
-        if (this.velY > 0) {
-            if (newYToPosition > wall.y && newYToPosition < (wall.y + wall.height)) {
-                yCol = true;
-            }
-        } else {
-            if (newYFromPosition > wall.y && newYFromPosition < (wall.y + wall.height)) {
-                yCol = true;
-            }
-        }
-
-        if (xCol && yCol && this.velX != 0) {
-            if (this.velX > 0) {
-                this.xPosition = wall.x - this.width;
-            } else if (this.velX < 0) {
-                this.xPosition = wall.x + wall.width;
-            }
-        } else {
-            this.xPosition = newXFromPosition;
-        }
-
-        if (xCol && yCol && this.velY != 0) {
-            if (this.velY > 0) {
-                this.yPosition = wall.y - this.height;
-            } else if (this.velY < 0) {
-                this.yPosition = wall.y + wall.height;
-            }
-        } else {
-            this.yPosition = newYFromPosition;
-        }
-
-        return (xCol || yCol);
+        return false;
     }
 
     public handleKeys(keys: boolean[]) {

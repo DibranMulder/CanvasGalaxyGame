@@ -15,6 +15,9 @@
         // Clear canvas
         canvas.width = 600;
         canvas.height = 600;
+        // Render stars
+        var start = new Stars();
+        start.render_stars(context, 600, 600);
 
         for (var i = 0; i < this.walls.length; i++) {
             var wall = this.walls[i];
@@ -25,9 +28,13 @@
         for (var i = 0; i < this.objects.length; i++) {
             var object = this.objects[i];
             object.handleKeys(this.keys);
-            object.handleMovement(this.walls[0]);
+            var collision = object.handleMovement(this.walls[0]);
             this.checkBounds(object);
-            context.fillStyle = "#37AFFA";
+            if (collision) {
+                context.fillStyle = "#FF0000";;
+            } else {
+                context.fillStyle = "#37AFFA";
+            }
             context.fillRect(object.xPosition, object.yPosition, object.width, object.height);
         }
 
