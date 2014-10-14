@@ -3,7 +3,7 @@
     public xBound: number = 600;
     public yBound: number = 600;
 
-    public keys: boolean[] = [];
+    public motionKeys: boolean[] = [];
 
     public torpedos: Torpedo[] = [];
     public players: Player[] = [];
@@ -42,7 +42,7 @@
         // Draw movable items.
         for (var i = 0; i < this.players.length; i++) {
             var object = this.players[i];
-            object.handleKeys(this.keys);
+            object.handleKeys(this.motionKeys);
             var collision = object.handleMovement(this.walls[0]);
             this.checkBounds(object);
             this.context.drawImage(object.image, object.xPosition, object.yPosition, object.width, object.height);
@@ -70,6 +70,13 @@
             }
         }
     }
+
+    public handleKeyPress(keyCode: number) {
+        // Space
+        if (keyCode == 32) {
+            this.torpedos.push(this.players[0].fireTorpedo());
+        }
+    }
 }
 
 window.onload = function init() {
@@ -84,10 +91,13 @@ window.onload = function init() {
     game.walls.push(new Wall(150, 350, 20, 200));
 
     window.addEventListener("keydown", function (e) {
-        game.keys[e.keyCode] = true;
+        game.motionKeys[e.keyCode] = true;
     });
     window.addEventListener("keyup", function (e) {
-        game.keys[e.keyCode] = false;
+        game.motionKeys[e.keyCode] = false;
+    });
+    window.addEventListener("keypress", function (e) {
+        game.handleKeyPress(e.keyCode);
     });
     
     game.gameLoop();

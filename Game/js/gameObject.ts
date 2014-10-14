@@ -23,24 +23,25 @@
     }
 
     public handleKeys(keys: boolean[]) {
+        // Left
         if (keys[37] && this.velX > -this.maxSpeed) {
             this.velX -= 0.5;
         } else if (this.velX < 0) {
             this.velX += 0.25;
         }
-
+        // Up
         if (keys[39] && this.velX < this.maxSpeed) {
             this.velX += 0.5;
         } else if (this.velX > 0) {
             this.velX -= 0.25;
         }
-
+        // Right
         if (keys[40] && this.velY < this.maxSpeed) {
             this.velY += 0.5;
         } else if (this.velY > 0) {
             this.velY -= 0.25;
         }
-
+        // Down
         if (keys[38] && this.velY > -this.maxSpeed) {
             this.velY -= 0.5;
         } else if (this.velY < 0) {
