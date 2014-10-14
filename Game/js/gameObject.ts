@@ -1,10 +1,12 @@
-﻿class GameObject {
+﻿class Player {
     private velY: number = 0;
     private velX: number = 0;
 
     public maxSpeed = 10;
+    public image: HTMLElement;
 
     constructor(public xPosition: number, public yPosition: number, public width: number, public height: number) {
+        this.image = document.getElementById("enterprise");
     }
 
     public handleMovement(wall: Wall): boolean {
@@ -45,4 +47,17 @@
             this.velY += 0.25;
         }
     }
-} 
+}
+
+class Bullet {
+    private velY: number = 5;
+    public color: string;
+
+    constructor(public xPosition: number, public yPosition: number, public width: number, public height: number) {
+        this.color = "#FF0000";
+    }
+
+    public handleMovement() {
+        this.yPosition -= this.velY;
+    }
+}

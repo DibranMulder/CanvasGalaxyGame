@@ -5,43 +5,54 @@
 
     public keys: boolean[] = [];
 
-    public objects: GameObject[] = [];
-
+    public bullets: Bullet[] = [];
+    public players: Player[] = [];
     public walls: Wall[] = [];
 
+    private canvas: HTMLCanvasElement;
+    private context: CanvasRenderingContext2D;
+
+    constructor() {
+        this.canvas = <HTMLCanvasElement>document.getElementById("world");
+        this.canvas.onclick = () => {
+            var bullet = new Bullet(this.players[0].xPosition, this.players[0].yPosition, 3, 3);
+            this.bullets.push(bullet);
+        };
+        this.context = this.canvas.getContext("2d");
+    }
+
     public gameLoop() {
-        var canvas = <HTMLCanvasElement>document.getElementById("world");
-        var context = canvas.getContext("2d");
         // Clear canvas
-        canvas.width = 600;
-        canvas.height = 600;
+        this.canvas.width = 600;
+        this.canvas.height = 600;
         // Render stars
         var start = new Stars();
-        start.render_stars(context, 600, 600);
+        start.render_stars(this.context, 600, 600);
 
+        for (var i = 0; i < this.bullets.length; i++) {
+            var bullet = this.bullets[i];
+            bullet.handleMovement();
+            this.context.fillStyle = bullet.color;
+            this.context.fillRect(bullet.xPosition, bullet.yPosition, bullet.width, bullet.height);
+        }
         for (var i = 0; i < this.walls.length; i++) {
             var wall = this.walls[i];
-            context.fillStyle = "#FA8237";
-            context.fillRect(wall.x, wall.y, wall.width, wall.height);
+            this.context.fillStyle = "#FA8237";
+            this.context.fillRect(wall.x, wall.y, wall.width, wall.height);
         }
         // Draw movable items.
-        for (var i = 0; i < this.objects.length; i++) {
-            var object = this.objects[i];
+        for (var i = 0; i < this.players.length; i++) {
+            var object = this.players[i];
             object.handleKeys(this.keys);
             var collision = object.handleMovement(this.walls[0]);
             this.checkBounds(object);
-            if (collision) {
-                context.fillStyle = "#FF0000";;
-            } else {
-                context.fillStyle = "#37AFFA";
-            }
-            context.fillRect(object.xPosition, object.yPosition, object.width, object.height);
+            this.context.drawImage(object.image, object.xPosition, object.yPosition, object.width, object.height);
         }
 
         requestAnimationFrame(this.gameLoop.bind(this));
     }
 
-    public checkBounds(object: GameObject) {
+    public checkBounds(object: Player) {
         if (object.xPosition < 0) {
             object.xPosition = 0;
         } else {
@@ -70,7 +81,7 @@ window.onload = function init() {
     window.requestAnimationFrame = requestAnimationFrame;
 
     var game = new Game();
-    game.objects.push(new GameObject(400, 400, 50, 50));
+    game.players.push(new Player(400, 400, 26, 50));
     game.walls.push(new Wall(150, 350, 20, 200));
 
     window.addEventListener("keydown", function (e) {
@@ -79,6 +90,6 @@ window.onload = function init() {
     window.addEventListener("keyup", function (e) {
         game.keys[e.keyCode] = false;
     });
-
+    
     game.gameLoop();
 };
