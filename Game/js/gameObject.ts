@@ -47,9 +47,14 @@
             this.velY += 0.25;
         }
     }
+
+    public fireTorpedo(): Torpedo {
+        // Make sure the torpedo comes from the center of the player.
+        return new Torpedo(this.xPosition + (this.width / 2), this.yPosition, 3, 3);
+    }
 }
 
-class Bullet {
+class Torpedo {
     private velY: number = 5;
     public color: string;
 

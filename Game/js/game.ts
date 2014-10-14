@@ -5,7 +5,7 @@
 
     public keys: boolean[] = [];
 
-    public bullets: Bullet[] = [];
+    public torpedos: Torpedo[] = [];
     public players: Player[] = [];
     public walls: Wall[] = [];
 
@@ -15,8 +15,7 @@
     constructor() {
         this.canvas = <HTMLCanvasElement>document.getElementById("world");
         this.canvas.onclick = () => {
-            var bullet = new Bullet(this.players[0].xPosition, this.players[0].yPosition, 3, 3);
-            this.bullets.push(bullet);
+            this.torpedos.push(this.players[0].fireTorpedo());
         };
         this.context = this.canvas.getContext("2d");
     }
@@ -29,8 +28,8 @@
         var start = new Stars();
         start.render_stars(this.context, 600, 600);
 
-        for (var i = 0; i < this.bullets.length; i++) {
-            var bullet = this.bullets[i];
+        for (var i = 0; i < this.torpedos.length; i++) {
+            var bullet = this.torpedos[i];
             bullet.handleMovement();
             this.context.fillStyle = bullet.color;
             this.context.fillRect(bullet.xPosition, bullet.yPosition, bullet.width, bullet.height);
