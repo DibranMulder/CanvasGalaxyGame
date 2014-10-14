@@ -1,4 +1,4 @@
-﻿class Stars {
+﻿class Galaxy {
     // The number of "star groups" to generate. 
     private number_of_groups = 100;
     // The radius of the group of stars 
@@ -6,6 +6,12 @@
     private group_gravity = 2;
     // The number of stars per group. 
     private stars_per_group = 20;
+
+    public stars: Star[] = [];
+
+    constructor() {
+
+    }
 
     private color_cap(c) {
         return Math.min(255, Math.max(0, c));
@@ -29,12 +35,11 @@
         return this.color_temperature_to_color_string(this.random_color_temperature());
     }
 
-    private render_star(context, x, y) {
-        context.fillStyle = this.random_star_color();
-        context.fillRect(x, y, 1, 1);
+    private render_star(x, y) {
+        this.stars.push(new Star(x, y, this.random_star_color()));
     }
 
-    private render_group(context, x, y) {
+    private render_group(x, y) {
         for (var i = 0; i < this.stars_per_group; i++) {
             var distance = Math.pow(Math.random(), this.group_gravity) * this.group_radius;
             var angle = Math.random() * Math.PI * 2;
@@ -42,15 +47,21 @@
             var star_y = y + Math.cos(angle) * distance;
 
             // round here to prevent "blurred" stars 
-            this.render_star(context, Math.round(star_x), Math.round(star_y));
+            this.render_star(Math.round(star_x), Math.round(star_y));
         }
     }
 
-    public render_stars(context, width, height) {
+    public render_stars(width, height) {
         for (var i = 0; i < this.number_of_groups; i++) {
             var x = Math.random() * width;
             var y = Math.random() * height;
-            this.render_group(context, x, y);
+            this.render_group(x, y);
         }
+    }
+}
+
+class Star {
+    constructor(public x: number, public y: number, public color: string) {
+
     }
 }

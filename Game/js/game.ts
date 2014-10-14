@@ -11,6 +11,7 @@
 
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
+    private galaxy: Galaxy;
 
     constructor() {
         this.canvas = <HTMLCanvasElement>document.getElementById("world");
@@ -18,16 +19,20 @@
             this.torpedos.push(this.players[0].fireTorpedo());
         };
         this.context = this.canvas.getContext("2d");
+        this.galaxy = new Galaxy();
+        this.galaxy.render_stars(600, 600);
     }
 
     public gameLoop() {
         // Clear canvas
         this.canvas.width = 600;
         this.canvas.height = 600;
-        // Render stars
-        var start = new Stars();
-        start.render_stars(this.context, 600, 600);
 
+        for (var i = 0; i < this.galaxy.stars.length; i++) {
+            var star = this.galaxy.stars[i];
+            this.context.fillStyle = star.color;
+            this.context.fillRect(star.x, star.y, 1, 1);
+        }
         for (var i = 0; i < this.torpedos.length; i++) {
             var bullet = this.torpedos[i];
             bullet.handleMovement();
