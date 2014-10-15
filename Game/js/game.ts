@@ -33,24 +33,40 @@
             this.context.fillStyle = star.color;
             this.context.fillRect(star.x, star.y, 1, 1);
         }
-        for (var i = 0; i < this.torpedos.length; i++) {
-            var bullet = this.torpedos[i];
-            bullet.handleMovement();
-            this.context.fillStyle = bullet.color;
-            this.context.fillRect(bullet.xPosition, bullet.yPosition, bullet.width, bullet.height);
-        }
         for (var i = 0; i < this.walls.length; i++) {
             var wall = this.walls[i];
             this.context.fillStyle = "#FA8237";
             this.context.fillRect(wall.x, wall.y, wall.width, wall.height);
         }
-        // Draw movable items.
+        // Draw players
         for (var i = 0; i < this.players.length; i++) {
-            var object = this.players[i];
-            object.handleKeys(this.motionKeys);
-            var collision = object.handleMovement(this.walls[0]);
-            this.checkBounds(object);
-            this.context.drawImage(object.image, object.xPosition, object.yPosition, object.width, object.height);
+            var player = this.players[i];
+            player.handleKeys(this.motionKeys);
+            var collision = player.handleMovement(this.walls[0]);
+            this.checkBounds(player);
+            this.context.drawImage(player.image, player.xPosition, player.yPosition, player.width, player.height);
+            if (player.laserFired) {
+                this.context.fillStyle = "#FF1900";
+                this.context.fillRect(player.xPosition + (player.width / 2), 0, 3, player.yPosition);
+            }
+        }
+        for (var i = 0; i < this.torpedos.length; i++) {
+            var torpedo = this.torpedos[i];
+            if (!torpedo.handleMovement()) {
+                this.torpedos.splice(i, 1);
+                continue;
+            }
+            this.context.beginPath();
+
+            var gradient = this.context.createRadialGradient(torpedo.xPosition, torpedo.yPosition, 0, torpedo.xPosition, torpedo.yPosition, torpedo.diameter);
+            gradient.addColorStop(0, "white");
+            gradient.addColorStop(0.4, "white");
+            gradient.addColorStop(0.4, torpedo.color);
+            gradient.addColorStop(1, "black");
+
+            this.context.fillStyle = gradient;
+            this.context.arc(torpedo.xPosition, torpedo.yPosition, torpedo.diameter, 0, 360, false);
+            this.context.fill();
         }
 
         requestAnimationFrame(this.gameLoop.bind(this));

@@ -2,8 +2,9 @@
     private velY: number = 0;
     private velX: number = 0;
 
-    public maxSpeed = 10;
+    public maxSpeed = 7;
     public image: HTMLElement;
+    public laserFired: boolean = false;
 
     constructor(public xPosition: number, public yPosition: number, public width: number, public height: number) {
         this.image = document.getElementById("enterprise");
@@ -47,11 +48,13 @@
         } else if (this.velY < 0) {
             this.velY += 0.25;
         }
+        // Enter
+        this.laserFired = keys[13];
     }
 
     public fireTorpedo(): Torpedo {
         // Make sure the torpedo comes from the center of the player.
-        return new Torpedo(this.xPosition + (this.width / 2), this.yPosition, 3, 3);
+        return new Torpedo(this.xPosition + (this.width / 2), this.yPosition, 15);
     }
 }
 
@@ -59,11 +62,17 @@ class Torpedo {
     private velY: number = 5;
     public color: string;
 
-    constructor(public xPosition: number, public yPosition: number, public width: number, public height: number) {
-        this.color = "#FF0000";
+    constructor(public xPosition: number, public yPosition: number, public diameter: number) {
+        this.color = "rgba(251,255,224, 0.5)";
+        this.color = "#FBFFE0";
     }
 
-    public handleMovement() {
-        this.yPosition -= this.velY;
+    public handleMovement(): boolean {
+        if (this.yPosition < 0) {
+            return false;
+        } else {
+            this.yPosition -= this.velY;
+            return true;
+        }
     }
 }
