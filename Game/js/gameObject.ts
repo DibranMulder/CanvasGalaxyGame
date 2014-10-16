@@ -1,12 +1,19 @@
-﻿class Player {
-    private velY: number = 0;
-    private velX: number = 0;
+﻿class GameObject {
+    public velY: number;
+    public velX: number;
 
+    constructor(public xPosition: number, public yPosition: number) {
+    }
+}
+
+class Player extends GameObject {
     public maxSpeed = 7;
     public image: HTMLElement;
-    public laserFired: boolean = false;
 
-    constructor(public xPosition: number, public yPosition: number, public width: number, public height: number) {
+    constructor(xPosition: number, yPosition: number, public width: number, public height: number) {
+        super(xPosition, yPosition);
+        this.velY = 0;
+        this.velX = 0;
         this.image = document.getElementById("enterprise");
     }
 
@@ -48,23 +55,46 @@
         } else if (this.velY < 0) {
             this.velY += 0.25;
         }
-        // Enter
-        this.laserFired = keys[13];
     }
 
     public fireTorpedo(): Torpedo {
         // Make sure the torpedo comes from the center of the player.
         return new Torpedo(this.xPosition + (this.width / 2), this.yPosition, 15);
     }
+
+    public fireLaser(): Laser {
+        return new Laser(this.xPosition + (this.width / 2), this.yPosition);
+    }
 }
 
-class Torpedo {
-    private velY: number = 5;
+class Torpedo extends GameObject {
     public color: string;
 
-    constructor(public xPosition: number, public yPosition: number, public diameter: number) {
+    constructor(xPosition: number, yPosition: number, public diameter: number) {
+        super(xPosition, yPosition);
+        this.velY = 5;
         this.color = "rgba(251,255,224, 0.5)";
-        this.color = "#FBFFE0";
+    }
+
+    public handleMovement(): boolean {
+        if (this.yPosition < 0) {
+            return false;
+        } else {
+            this.yPosition -= this.velY;
+            return true;
+        }
+    }
+}
+
+class Laser extends GameObject {
+    public color: string;
+    public height: number = 40;
+    public width: number = 3;
+
+    constructor(xPosition: number, yPosition: number) {
+        super(xPosition, yPosition);
+        this.velY = 10;
+        this.color = "#FF1900";
     }
 
     public handleMovement(): boolean {

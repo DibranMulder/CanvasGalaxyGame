@@ -5,6 +5,7 @@
 
     public motionKeys: boolean[] = [];
 
+    public lasers: Laser[] = [];
     public torpedos: Torpedo[] = [];
     public players: Player[] = [];
     public walls: Wall[] = [];
@@ -14,10 +15,11 @@
     private galaxy: Galaxy;
 
     constructor() {
-        this.canvas = <HTMLCanvasElement>document.getElementById("world");
+        this.canvas = <HTMLCanvasElement> document.getElementById("world");
         this.canvas.onclick = () => {
             this.torpedos.push(this.players[0].fireTorpedo());
         };
+
         this.context = this.canvas.getContext("2d");
         this.galaxy = new Galaxy();
         this.galaxy.render_stars(600, 600);
@@ -45,17 +47,25 @@
             var collision = player.handleMovement(this.walls[0]);
             this.checkBounds(player);
             this.context.drawImage(player.image, player.xPosition, player.yPosition, player.width, player.height);
-            if (player.laserFired) {
-                this.context.fillStyle = "#FF1900";
-                this.context.fillRect(player.xPosition + (player.width / 2), 0, 3, player.yPosition);
-            }
         }
+        // Lasers
+        for (var i = 0; i < this.lasers.length; i++) {
+            var laser = this.lasers[i];
+            if (!laser.handleMovement()) {
+                this.lasers.splice(i, 1);
+                continue;
+            }
+            this.context.fillStyle = laser.color;
+            this.context.fillRect(laser.xPosition, laser.yPosition - laser.height, laser.width, laser.height);
+        }
+        // Torpedos
         for (var i = 0; i < this.torpedos.length; i++) {
             var torpedo = this.torpedos[i];
             if (!torpedo.handleMovement()) {
                 this.torpedos.splice(i, 1);
                 continue;
             }
+            this.context.globalCompositeOperation = "lighter";
             this.context.beginPath();
 
             var gradient = this.context.createRadialGradient(torpedo.xPosition, torpedo.yPosition, 0, torpedo.xPosition, torpedo.yPosition, torpedo.diameter);
@@ -96,11 +106,13 @@
         // Space
         if (keyCode == 32) {
             this.torpedos.push(this.players[0].fireTorpedo());
+        } else if (keyCode == 13) {
+            this.lasers.push(this.players[0].fireLaser());
         }
     }
 }
 
-window.onload = function init() {
+window.onload = function () {
     var requestAnimationFrame = (<any>window).requestAnimationFrame ||
         (<any>window).mozRequestAnimationFrame ||
         (<any>window).webkitRequestAnimationFrame ||
@@ -120,6 +132,6 @@ window.onload = function init() {
     window.addEventListener("keypress", function (e) {
         game.handleKeyPress(e.keyCode);
     });
-    
+
     game.gameLoop();
 };
