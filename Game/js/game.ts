@@ -39,9 +39,11 @@
         // Draw Asteroids
         for (var i = 0; i < this.galaxy.asteroids.length; i++) {
             var asteroid = this.galaxy.asteroids[i];
+            this.context.fillStyle = "#FF00D0";
+            this.context.fillRect(asteroid.xPosition, asteroid.yPosition, asteroid.width, asteroid.height);
             asteroid.bumpRotation();
             this.context.save();
-            this.context.translate(asteroid.xPosition, asteroid.yPosition);
+            this.context.translate(asteroid.xPosition + (asteroid.width / 2), asteroid.yPosition + (asteroid.height / 2));
             this.context.rotate(asteroid.radians);
             this.context.drawImage(asteroid.image, 0, 0, asteroid.width, asteroid.height, -(asteroid.width / 2), -(asteroid.height / 2), asteroid.width, asteroid.height);
             this.context.restore();
