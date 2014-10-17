@@ -18,10 +18,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="css\app.css" />
+    <Content Include="images\asteroid.png" />
     <Content Include="images\enterprise.png" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="js\gameObject.ts" />
-    <TypeScriptCompile Include="js\wall.ts" />
     <TypeScriptCompile Include="js\stars.ts" />
     <Content Include="web.config" />
   </ItemGroup>

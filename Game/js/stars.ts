@@ -8,7 +8,7 @@
     private stars_per_group = 20;
 
     public stars: Star[] = [];
-    public asteroid: Asteroid;
+    public asteroids: Asteroid[] = [];
 
     constructor() {
 
@@ -61,18 +61,19 @@
     }
 
     public render_asteroid() {
-        this.asteroid = new Asteroid(100, 100);
+        this.asteroids.push(new Asteroid(100, 100));
     }
 }
 
-class Asteroid {
+class Asteroid implements CollisionObject {
     public width: number = 72;
     public height: number = 72;
     public image: HTMLImageElement;
-    private angle: number = 0;
-    public radians: number = 0;
 
-    constructor(public x: number, public y: number) {
+    public radians: number = 0;
+    private angle: number = 0;
+
+    constructor(public xPosition: number, public yPosition: number) {
         this.image = new Image();
         this.image.src = "images/asteroid.png";
     }

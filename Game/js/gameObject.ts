@@ -1,4 +1,11 @@
-﻿class GameObject {
+﻿interface CollisionObject {
+    xPosition: number;
+    yPosition: number;
+    width: number;
+    height: number;
+}
+
+class GameObject {
     public velY: number;
     public velX: number;
 
@@ -17,14 +24,16 @@ class Player extends GameObject {
         this.image = document.getElementById("enterprise");
     }
 
-    public handleMovement(wall: Wall): boolean {
+    public handleMovement() {
         this.xPosition += this.velX;
         this.yPosition += this.velY;
+    }
 
-        if (this.xPosition < wall.x + wall.width &&
-            this.xPosition + this.width > wall.x &&
-            this.yPosition < wall.y + wall.height &&
-            this.height + this.yPosition > wall.y) {
+    public checkCollision(object: CollisionObject): boolean {
+        if (this.xPosition < object.xPosition + object.width &&
+            this.xPosition + this.width > object.xPosition &&
+            this.yPosition < object.yPosition + object.height &&
+            this.height + this.yPosition > object.yPosition) {
             return true;
         }
         return false;

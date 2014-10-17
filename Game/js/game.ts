@@ -8,7 +8,6 @@
     public lasers: Laser[] = [];
     public torpedos: Torpedo[] = [];
     public players: Player[] = [];
-    public walls: Wall[] = [];
 
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
@@ -27,6 +26,7 @@
     }
 
     public gameLoop() {
+        var quit = false;
         // Clear canvas
         this.canvas.width = 600;
         this.canvas.height = 600;
@@ -36,26 +36,27 @@
             this.context.fillStyle = star.color;
             this.context.fillRect(star.x, star.y, 1, 1);
         }
-
-        var asteroid = this.galaxy.asteroid;
-        asteroid.bumpRotation();
-        this.context.save();
-        this.context.translate(asteroid.x, asteroid.y);
-        this.context.rotate(asteroid.radians);
-        this.context.drawImage(asteroid.image, 0, 0, asteroid.width, asteroid.height, -(asteroid.width / 2), -(asteroid.height / 2), asteroid.width, asteroid.height);
-        //this.context.drawImage(this.galaxy.asteroid.image, 20 - (asteroid.width / 2), 20 - (asteroid.height / 2), asteroid.width, asteroid.height, asteroid.x, asteroid.y, asteroid.width, asteroid.height);
-        this.context.restore();
-
-        for (var i = 0; i < this.walls.length; i++) {
-            var wall = this.walls[i];
-            this.context.fillStyle = "#FA8237";
-            this.context.fillRect(wall.x, wall.y, wall.width, wall.height);
+        // Draw Asteroids
+        for (var i = 0; i < this.galaxy.asteroids.length; i++) {
+            var asteroid = this.galaxy.asteroids[i];
+            asteroid.bumpRotation();
+            this.context.save();
+            this.context.translate(asteroid.xPosition, asteroid.yPosition);
+            this.context.rotate(asteroid.radians);
+            this.context.drawImage(asteroid.image, 0, 0, asteroid.width, asteroid.height, -(asteroid.width / 2), -(asteroid.height / 2), asteroid.width, asteroid.height);
+            this.context.restore();
         }
         // Draw players
         for (var i = 0; i < this.players.length; i++) {
             var player = this.players[i];
             player.handleKeys(this.motionKeys);
-            var collision = player.handleMovement(this.walls[0]);
+            player.handleMovement();
+            for (var g = 0; g < this.galaxy.asteroids.length; g++) {
+                if (player.checkCollision(this.galaxy.asteroids[g])) {
+                    alert("Collision detected");
+                    quit = true;
+                }
+            }
             this.checkBounds(player);
             this.context.drawImage(player.image, player.xPosition, player.yPosition, player.width, player.height);
         }
@@ -89,8 +90,9 @@
             this.context.arc(torpedo.xPosition, torpedo.yPosition, torpedo.diameter, 0, 360, false);
             this.context.fill();
         }
-
-        requestAnimationFrame(this.gameLoop.bind(this));
+        if (!quit) {
+            requestAnimationFrame(this.gameLoop.bind(this));
+        }
     }
 
     public checkBounds(object: Player) {
@@ -132,7 +134,6 @@ window.onload = function () {
 
     var game = new Game();
     game.players.push(new Player(400, 400, 26, 50));
-    game.walls.push(new Wall(150, 350, 20, 200));
 
     window.addEventListener("keydown", function (e) {
         game.motionKeys[e.keyCode] = true;
