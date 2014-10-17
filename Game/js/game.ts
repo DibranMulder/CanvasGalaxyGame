@@ -23,18 +23,29 @@
         this.context = this.canvas.getContext("2d");
         this.galaxy = new Galaxy();
         this.galaxy.render_stars(600, 600);
+        this.galaxy.render_asteroid();
     }
 
     public gameLoop() {
         // Clear canvas
         this.canvas.width = 600;
         this.canvas.height = 600;
-
+        // Draw galaxy
         for (var i = 0; i < this.galaxy.stars.length; i++) {
             var star = this.galaxy.stars[i];
             this.context.fillStyle = star.color;
             this.context.fillRect(star.x, star.y, 1, 1);
         }
+
+        var asteroid = this.galaxy.asteroid;
+        asteroid.bumpRotation();
+        this.context.save();
+        this.context.translate(asteroid.x, asteroid.y);
+        this.context.rotate(asteroid.radians);
+        this.context.drawImage(asteroid.image, 0, 0, asteroid.width, asteroid.height, -(asteroid.width / 2), -(asteroid.height / 2), asteroid.width, asteroid.height);
+        //this.context.drawImage(this.galaxy.asteroid.image, 20 - (asteroid.width / 2), 20 - (asteroid.height / 2), asteroid.width, asteroid.height, asteroid.x, asteroid.y, asteroid.width, asteroid.height);
+        this.context.restore();
+
         for (var i = 0; i < this.walls.length; i++) {
             var wall = this.walls[i];
             this.context.fillStyle = "#FA8237";
@@ -48,7 +59,7 @@
             this.checkBounds(player);
             this.context.drawImage(player.image, player.xPosition, player.yPosition, player.width, player.height);
         }
-        // Lasers
+        // Draw lasers
         for (var i = 0; i < this.lasers.length; i++) {
             var laser = this.lasers[i];
             if (!laser.handleMovement()) {
@@ -58,7 +69,7 @@
             this.context.fillStyle = laser.color;
             this.context.fillRect(laser.xPosition, laser.yPosition - laser.height, laser.width, laser.height);
         }
-        // Torpedos
+        // Draw torpedos
         for (var i = 0; i < this.torpedos.length; i++) {
             var torpedo = this.torpedos[i];
             if (!torpedo.handleMovement()) {

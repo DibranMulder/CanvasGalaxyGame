@@ -8,6 +8,7 @@
     private stars_per_group = 20;
 
     public stars: Star[] = [];
+    public asteroid: Asteroid;
 
     constructor() {
 
@@ -57,6 +58,30 @@
             var y = Math.random() * height;
             this.render_group(x, y);
         }
+    }
+
+    public render_asteroid() {
+        this.asteroid = new Asteroid(100, 100);
+    }
+}
+
+class Asteroid {
+    public width: number = 72;
+    public height: number = 72;
+    public image: HTMLImageElement;
+    private angle: number = 0;
+    public radians: number = 0;
+
+    constructor(public x: number, public y: number) {
+        this.image = new Image();
+        this.image.src = "images/asteroid.png";
+    }
+
+    public bumpRotation() {
+        var TO_RADIANS = Math.PI / 180;
+        this.angle += 1;
+        if (this.angle >= 360) this.angle = 0;
+        this.radians = this.angle * TO_RADIANS;
     }
 }
 
