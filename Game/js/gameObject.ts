@@ -1,19 +1,28 @@
-﻿interface CollisionObject {
-    xPosition: number;
-    yPosition: number;
+﻿interface DrawableObject {
+    draw(context: CanvasRenderingContext2D);
+}
+
+interface CollisionObject extends MovableObject {
     width: number;
     height: number;
 }
 
-class GameObject {
+class MovableObject {
     public velY: number;
     public velX: number;
 
     constructor(public xPosition: number, public yPosition: number) {
+        this.velX = 0;
+        this.velY = 0;
+    }
+
+    public handleMovement() {
+        this.xPosition += this.velX;
+        this.yPosition += this.velY;
     }
 }
 
-class Player extends GameObject {
+class Player extends MovableObject implements DrawableObject {
     public maxSpeed = 7;
     public image: HTMLElement;
 
@@ -22,11 +31,6 @@ class Player extends GameObject {
         this.velY = 0;
         this.velX = 0;
         this.image = document.getElementById("enterprise");
-    }
-
-    public handleMovement() {
-        this.xPosition += this.velX;
-        this.yPosition += this.velY;
     }
 
     public checkCollision(object: CollisionObject): boolean {
@@ -66,6 +70,10 @@ class Player extends GameObject {
         }
     }
 
+    public draw(context: CanvasRenderingContext2D) {
+        context.drawImage(this.image, this.xPosition, this.yPosition, this.width, this.height);
+    }
+
     public fireTorpedo(): Torpedo {
         // Make sure the torpedo comes from the center of the player.
         return new Torpedo(this.xPosition + (this.width / 2), this.yPosition, 15);
@@ -76,42 +84,44 @@ class Player extends GameObject {
     }
 }
 
-class Torpedo extends GameObject {
+class Torpedo extends MovableObject implements DrawableObject {
     public color: string;
 
     constructor(xPosition: number, yPosition: number, public diameter: number) {
         super(xPosition, yPosition);
-        this.velY = 5;
+        this.velY = -5;
         this.color = "rgba(251,255,224, 0.5)";
     }
 
-    public handleMovement(): boolean {
-        if (this.yPosition < 0) {
-            return false;
-        } else {
-            this.yPosition -= this.velY;
-            return true;
-        }
+    public draw(context: CanvasRenderingContext2D) {
+        context.globalCompositeOperation = "lighter";
+        context.beginPath();
+
+        var gradient = context.createRadialGradient(this.xPosition, this.yPosition, 0, this.xPosition, this.yPosition, this.diameter);
+        gradient.addColorStop(0, "white");
+        gradient.addColorStop(0.4, "white");
+        gradient.addColorStop(0.4, this.color);
+        gradient.addColorStop(1, "black");
+
+        context.fillStyle = gradient;
+        context.arc(this.xPosition, this.yPosition, this.diameter, 0, 360, false);
+        context.fill();
     }
 }
 
-class Laser extends GameObject {
+class Laser extends MovableObject implements DrawableObject {
     public color: string;
     public height: number = 40;
     public width: number = 3;
 
     constructor(xPosition: number, yPosition: number) {
         super(xPosition, yPosition);
-        this.velY = 10;
+        this.velY = -10;
         this.color = "#FF1900";
     }
 
-    public handleMovement(): boolean {
-        if (this.yPosition < 0) {
-            return false;
-        } else {
-            this.yPosition -= this.velY;
-            return true;
-        }
+    public draw(context: CanvasRenderingContext2D) {
+        context.fillStyle = this.color;
+        context.fillRect(this.xPosition, this.yPosition - this.height, this.width, this.height);
     }
 }

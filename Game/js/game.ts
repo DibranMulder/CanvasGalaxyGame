@@ -21,8 +21,8 @@
 
         this.context = this.canvas.getContext("2d");
         this.galaxy = new Galaxy();
-        this.galaxy.render_stars(600, 600);
-        this.galaxy.render_asteroid();
+        this.galaxy.renderStars(600, 600);
+        this.galaxy.renderAsteroid();
     }
 
     public gameLoop() {
@@ -33,26 +33,15 @@
         // Draw galaxy
         for (var i = 0; i < this.galaxy.stars.length; i++) {
             var star = this.galaxy.stars[i];
-            this.context.fillStyle = star.color;
-            this.context.fillRect(star.x, star.y, 1, 1);
-        }
-        // Draw Asteroids
-        for (var i = 0; i < this.galaxy.asteroids.length; i++) {
-            var asteroid = this.galaxy.asteroids[i];
-            this.context.fillStyle = "#FF00D0";
-            this.context.fillRect(asteroid.xPosition, asteroid.yPosition, asteroid.width, asteroid.height);
-            asteroid.bumpRotation();
-            this.context.save();
-            this.context.translate(asteroid.xPosition + (asteroid.width / 2), asteroid.yPosition + (asteroid.height / 2));
-            this.context.rotate(asteroid.radians);
-            this.context.drawImage(asteroid.image, 0, 0, asteroid.width, asteroid.height, -(asteroid.width / 2), -(asteroid.height / 2), asteroid.width, asteroid.height);
-            this.context.restore();
+            star.handleMovement();
+            star.draw(this.context);
         }
         // Draw players
         for (var i = 0; i < this.players.length; i++) {
             var player = this.players[i];
             player.handleKeys(this.motionKeys);
             player.handleMovement();
+
             for (var g = 0; g < this.galaxy.asteroids.length; g++) {
                 if (player.checkCollision(this.galaxy.asteroids[g])) {
                     alert("Collision detected");
@@ -60,37 +49,25 @@
                 }
             }
             this.checkBounds(player);
-            this.context.drawImage(player.image, player.xPosition, player.yPosition, player.width, player.height);
+            player.draw(this.context);
+        }
+        // Draw Asteroids
+        for (var i = 0; i < this.galaxy.asteroids.length; i++) {
+            var asteroid = this.galaxy.asteroids[i];
+            asteroid.handleMovement();
+            asteroid.draw(this.context);
         }
         // Draw lasers
         for (var i = 0; i < this.lasers.length; i++) {
             var laser = this.lasers[i];
-            if (!laser.handleMovement()) {
-                this.lasers.splice(i, 1);
-                continue;
-            }
-            this.context.fillStyle = laser.color;
-            this.context.fillRect(laser.xPosition, laser.yPosition - laser.height, laser.width, laser.height);
+            laser.handleMovement();
+            laser.draw(this.context);
         }
         // Draw torpedos
         for (var i = 0; i < this.torpedos.length; i++) {
             var torpedo = this.torpedos[i];
-            if (!torpedo.handleMovement()) {
-                this.torpedos.splice(i, 1);
-                continue;
-            }
-            this.context.globalCompositeOperation = "lighter";
-            this.context.beginPath();
-
-            var gradient = this.context.createRadialGradient(torpedo.xPosition, torpedo.yPosition, 0, torpedo.xPosition, torpedo.yPosition, torpedo.diameter);
-            gradient.addColorStop(0, "white");
-            gradient.addColorStop(0.4, "white");
-            gradient.addColorStop(0.4, torpedo.color);
-            gradient.addColorStop(1, "black");
-
-            this.context.fillStyle = gradient;
-            this.context.arc(torpedo.xPosition, torpedo.yPosition, torpedo.diameter, 0, 360, false);
-            this.context.fill();
+            torpedo.handleMovement();
+            torpedo.draw(this.context);
         }
         if (!quit) {
             requestAnimationFrame(this.gameLoop.bind(this));

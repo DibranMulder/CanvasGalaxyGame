@@ -52,7 +52,7 @@
         }
     }
 
-    public render_stars(width, height) {
+    public renderStars(width, height) {
         for (var i = 0; i < this.number_of_groups; i++) {
             var x = Math.random() * width;
             var y = Math.random() * height;
@@ -60,12 +60,12 @@
         }
     }
 
-    public render_asteroid() {
+    public renderAsteroid() {
         this.asteroids.push(new Asteroid(100, 100));
     }
 }
 
-class Asteroid implements CollisionObject {
+class Asteroid extends MovableObject implements CollisionObject, DrawableObject {
     public width: number = 72;
     public height: number = 72;
     public image: HTMLImageElement;
@@ -73,7 +73,9 @@ class Asteroid implements CollisionObject {
     public radians: number = 0;
     private angle: number = 0;
 
-    constructor(public xPosition: number, public yPosition: number) {
+    constructor(xPosition: number, yPosition: number) {
+        super(xPosition, yPosition);
+        this.velY = 2;
         this.image = new Image();
         this.image.src = "images/asteroid.png";
     }
@@ -84,10 +86,27 @@ class Asteroid implements CollisionObject {
         if (this.angle >= 360) this.angle = 0;
         this.radians = this.angle * TO_RADIANS;
     }
+
+    public draw(context: CanvasRenderingContext2D) {
+        context.fillStyle = "#FF00D0";
+        context.fillRect(this.xPosition, this.yPosition, this.width, this.height);
+        this.bumpRotation();
+        context.save();
+        context.translate(this.xPosition + (this.width / 2), this.yPosition + (this.height / 2));
+        context.rotate(this.radians);
+        context.drawImage(this.image, 0, 0, this.width, this.height, -(this.width / 2), -(this.height / 2), this.width, this.height);
+        context.restore();
+    }
 }
 
-class Star {
-    constructor(public x: number, public y: number, public color: string) {
+class Star extends MovableObject implements DrawableObject {
+    constructor(xPosition: number, yPosition: number, public color: string) {
+        super(xPosition, yPosition);
+        this.velY = 1;
+    }
 
+    public draw(context: CanvasRenderingContext2D) {
+        context.fillStyle = this.color;
+        context.fillRect(this.xPosition, this.yPosition, 1, 1);
     }
 }
