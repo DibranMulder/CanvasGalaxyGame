@@ -10,24 +10,39 @@ interface CollisionObject extends MovableObject {
 class MovableObject {
     public velY: number;
     public velX: number;
+    public maxX: number;
+    public maxY: number;
 
-    constructor(public xPosition: number, public yPosition: number) {
+    constructor(public xPosition: number, public yPosition: number, public width: number, public height: number) {
         this.velX = 0;
         this.velY = 0;
+        this.maxX = 600 - this.width;
+        this.maxY = 600 - this.height;
     }
 
     public handleMovement() {
         this.xPosition += this.velX;
         this.yPosition += this.velY;
     }
+
+    public checkBounds(): boolean {
+        return (this.xPosition < 0 ||
+                this.xPosition > this.maxX ||
+                this.yPosition < 0 ||
+                this.yPosition > this.maxY);
+    }
 }
 
 class Player extends MovableObject implements DrawableObject {
+    public health: number = 100;
+    public energy: number = 10000;
+    public shield: number = 100;
+
     public maxSpeed = 7;
     public image: HTMLElement;
 
-    constructor(xPosition: number, yPosition: number, public width: number, public height: number) {
-        super(xPosition, yPosition);
+    constructor(xPosition: number, yPosition: number, width: number, height: number) {
+        super(xPosition, yPosition, width, height);
         this.velY = 0;
         this.velX = 0;
         this.image = document.getElementById("enterprise");
@@ -76,19 +91,42 @@ class Player extends MovableObject implements DrawableObject {
 
     public fireTorpedo(): Torpedo {
         // Make sure the torpedo comes from the center of the player.
-        return new Torpedo(this.xPosition + (this.width / 2), this.yPosition, 15);
+        return new Torpedo(this.xPosition + (this.width / 2), this.yPosition, 14);
     }
 
     public fireLaser(): Laser {
         return new Laser(this.xPosition + (this.width / 2), this.yPosition);
     }
+
+    public checkBounds(): boolean {
+        if (this.xPosition < 0) {
+            this.xPosition = 0;
+        } else {
+            var maxX = 600 - this.width;
+            if (this.xPosition > maxX) {
+                this.xPosition = maxX;
+            }
+        }
+
+        if (this.yPosition < 0) {
+            this.yPosition = 0;
+        } else {
+            var maxY = 600 - this.height;
+            if (this.yPosition > maxY) {
+                this.yPosition = maxY;
+            }
+        }
+        return false;
+    }
 }
 
 class Torpedo extends MovableObject implements DrawableObject {
     public color: string;
+    private radius: number;
 
     constructor(xPosition: number, yPosition: number, public diameter: number) {
-        super(xPosition, yPosition);
+        super(xPosition, yPosition, diameter, diameter);
+        this.radius = diameter / 2;
         this.velY = -5;
         this.color = "rgba(251,255,224, 0.5)";
     }
@@ -106,6 +144,16 @@ class Torpedo extends MovableObject implements DrawableObject {
         context.fillStyle = gradient;
         context.arc(this.xPosition, this.yPosition, this.diameter, 0, 360, false);
         context.fill();
+
+        context.fillStyle = "#FF1900";
+        context.fillRect(this.xPosition, this.yPosition, 1, 1);
+    }
+
+    public checkBounds(): boolean {
+        return ((this.xPosition - this.radius) < 0 ||
+            this.xPosition > (this.maxX - this.radius) ||
+            (this.yPosition - this.radius) < 0 ||
+            this.yPosition > (this.maxY - this.radius));
     }
 }
 
@@ -115,7 +163,7 @@ class Laser extends MovableObject implements DrawableObject {
     public width: number = 3;
 
     constructor(xPosition: number, yPosition: number) {
-        super(xPosition, yPosition);
+        super(xPosition, yPosition, 3, 40);
         this.velY = -10;
         this.color = "#FF1900";
     }

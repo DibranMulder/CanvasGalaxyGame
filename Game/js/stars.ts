@@ -66,15 +66,13 @@
 }
 
 class Asteroid extends MovableObject implements CollisionObject, DrawableObject {
-    public width: number = 72;
-    public height: number = 72;
     public image: HTMLImageElement;
 
     public radians: number = 0;
     private angle: number = 0;
 
     constructor(xPosition: number, yPosition: number) {
-        super(xPosition, yPosition);
+        super(xPosition, yPosition, 72, 72);
         this.velY = 2;
         this.image = new Image();
         this.image.src = "images/asteroid.png";
@@ -101,12 +99,12 @@ class Asteroid extends MovableObject implements CollisionObject, DrawableObject 
 
 class Star extends MovableObject implements DrawableObject {
     constructor(xPosition: number, yPosition: number, public color: string) {
-        super(xPosition, yPosition);
+        super(xPosition, yPosition, 1, 1);
         this.velY = 1;
     }
 
     public draw(context: CanvasRenderingContext2D) {
         context.fillStyle = this.color;
-        context.fillRect(this.xPosition, this.yPosition, 1, 1);
+        context.fillRect(this.xPosition, this.yPosition, this.width, this.height);
     }
 }

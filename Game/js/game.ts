@@ -34,6 +34,9 @@
         for (var i = 0; i < this.galaxy.stars.length; i++) {
             var star = this.galaxy.stars[i];
             star.handleMovement();
+            if (star.checkBounds()) {
+                this.galaxy.stars.splice(i, 1);
+            }
             star.draw(this.context);
         }
         // Draw players
@@ -48,49 +51,38 @@
                     quit = true;
                 }
             }
-            this.checkBounds(player);
+            player.checkBounds();
             player.draw(this.context);
         }
         // Draw Asteroids
         for (var i = 0; i < this.galaxy.asteroids.length; i++) {
             var asteroid = this.galaxy.asteroids[i];
             asteroid.handleMovement();
+            if (asteroid.checkBounds()) {
+                this.galaxy.asteroids.splice(i, 1);
+            }
             asteroid.draw(this.context);
         }
         // Draw lasers
         for (var i = 0; i < this.lasers.length; i++) {
             var laser = this.lasers[i];
             laser.handleMovement();
+            if (laser.checkBounds()) {
+                this.lasers.splice(i, 1);
+            }
             laser.draw(this.context);
         }
         // Draw torpedos
         for (var i = 0; i < this.torpedos.length; i++) {
             var torpedo = this.torpedos[i];
             torpedo.handleMovement();
+            if (torpedo.checkBounds()) {
+                this.torpedos.splice(i, 1);
+            }
             torpedo.draw(this.context);
         }
         if (!quit) {
             requestAnimationFrame(this.gameLoop.bind(this));
-        }
-    }
-
-    public checkBounds(object: Player) {
-        if (object.xPosition < 0) {
-            object.xPosition = 0;
-        } else {
-            var maxX = 600 - object.width;
-            if (object.xPosition > maxX) {
-                object.xPosition = maxX;
-            }
-        }
-
-        if (object.yPosition < 0) {
-            object.yPosition = 0;
-        } else {
-            var maxY = 600 - object.height;
-            if (object.yPosition > maxY) {
-                object.yPosition = maxY;
-            }
         }
     }
 
