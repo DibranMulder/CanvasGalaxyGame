@@ -1,67 +1,113 @@
 ﻿class Galaxy {
     // The number of "star groups" to generate. 
-    private number_of_groups = 100;
+    private numberOfGroups = 100;
     // The radius of the group of stars 
-    private group_radius = 100;
-    private group_gravity = 2;
+    private groupRadius = 100;
+    private groupGravity = 2;
     // The number of stars per group. 
-    private stars_per_group = 20;
+    private starsPerGroup = 20;
 
     public stars: Star[] = [];
     public asteroids: Asteroid[] = [];
 
-    constructor() {
+    private numberOfAsteroids = 1;
 
+    constructor() {
+        this.renderStars(false);
+        this.renderStars(true);
     }
 
-    private color_cap(c) {
+    private colorCap(c) {
         return Math.min(255, Math.max(0, c));
     }
 
     // Calculate RGB color for color temp. in Kelvin. Only supports range 1000 ~ 40'000. 
-    private color_temperature_to_color_string(k) {
+    private colorTemperatureToColorString(k) {
         var temperature = k / 100;
-        var r = temperature <= 66 ? 255 : this.color_cap(329.698727446 * Math.pow(temperature - 60, - 0.1332047592));
-        var g = this.color_cap(temperature <= 66 ? (99.4708025861 * Math.log(temperature) - 161.1195681661) : (288.1221695283 * Math.pow(temperature - 60, -0.0755148492)));
-        var b = temperature >= 66 ? 255 : this.color_cap(138.5177312231 * Math.log(temperature - 10) - 305.0447927307);
+        var r = temperature <= 66 ? 255 : this.colorCap(329.698727446 * Math.pow(temperature - 60, - 0.1332047592));
+        var g = this.colorCap(temperature <= 66 ? (99.4708025861 * Math.log(temperature) - 161.1195681661) : (288.1221695283 * Math.pow(temperature - 60, -0.0755148492)));
+        var b = temperature >= 66 ? 255 : this.colorCap(138.5177312231 * Math.log(temperature - 10) - 305.0447927307);
         return "rgb(" + r.toFixed() + "," + g.toFixed() + "," + b.toFixed() + ")";
     }
 
-    private random_color_temperature() {
+    private randomColorTemperature() {
         // 2000 ~ 2000*8 
         return Math.pow(8, Math.random()) * 2000;
     }
 
-    private random_star_color() {
-        return this.color_temperature_to_color_string(this.random_color_temperature());
+    private randomStarColor() {
+        return this.colorTemperatureToColorString(this.randomColorTemperature());
     }
 
-    private render_star(x, y) {
-        this.stars.push(new Star(x, y, this.random_star_color()));
+    private renderStar(x, y) {
+        this.stars.push(new Star(x, y, this.randomStarColor()));
     }
 
-    private render_group(x, y) {
-        for (var i = 0; i < this.stars_per_group; i++) {
-            var distance = Math.pow(Math.random(), this.group_gravity) * this.group_radius;
+    private renderGroup(x, y) {
+        for (var i = 0; i < this.starsPerGroup; i++) {
+            var distance = Math.pow(Math.random(), this.groupGravity) * this.groupRadius;
             var angle = Math.random() * Math.PI * 2;
             var star_x = x - Math.sin(angle) * distance;
             var star_y = y + Math.cos(angle) * distance;
 
             // round here to prevent "blurred" stars 
-            this.render_star(Math.round(star_x), Math.round(star_y));
+            this.renderStar(Math.round(star_x), Math.round(star_y));
         }
     }
 
-    public renderStars(width, height) {
-        for (var i = 0; i < this.number_of_groups; i++) {
-            var x = Math.random() * width;
-            var y = Math.random() * height;
-            this.render_group(x, y);
+    private drawIteration: number = 0;
+    public renderStars(additional: boolean) {
+        for (var i = 0; i < this.numberOfGroups; i++) {
+            var x = Math.random() * 600;
+            var y = Math.random() * 600;
+            if (additional) {
+                y = y - 600;
+            }
+            this.renderGroup(x, y);
+        }
+        for (var i = 0; i < this.numberOfAsteroids; i++) {
+            var x = Math.random() * 600;
+            var y = Math.random() * 600;
+            if (additional) {
+                y = y - 600;
+            }
+            this.renderAsteroid(x, y);
         }
     }
 
-    public renderAsteroid() {
-        this.asteroids.push(new Asteroid(100, 100));
+    public draw(context: CanvasRenderingContext2D) {
+        if (this.drawIteration == 600) {
+            this.renderStars(true);
+            this.drawIteration = 0;
+        }
+        for (var i = 0; i < this.stars.length; i++) {
+            var star = this.stars[i];
+            star.handleMovement();
+
+            if (star.yPosition > 0) {
+                if (star.checkBounds()) {
+                    this.stars.splice(i, 1);
+                }
+                star.draw(context);
+            }
+        }
+        for (var i = 0; i < this.asteroids.length; i++) {
+            var asteroid = this.asteroids[i];
+            asteroid.handleMovement();
+
+            if (asteroid.yPosition > 0) {
+                if (asteroid.checkBounds()) {
+                    this.asteroids.splice(i, 1);
+                }
+            }
+
+            asteroid.draw(context);
+        }
+        this.drawIteration++;
+    }
+
+    public renderAsteroid(x: number, y: number) {
+        this.asteroids.push(new Asteroid(x, y));
     }
 }
 

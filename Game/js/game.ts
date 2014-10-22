@@ -21,8 +21,6 @@
 
         this.context = this.canvas.getContext("2d");
         this.galaxy = new Galaxy();
-        this.galaxy.renderStars(600, 600);
-        this.galaxy.renderAsteroid();
     }
 
     public gameLoop() {
@@ -31,14 +29,7 @@
         this.canvas.width = 600;
         this.canvas.height = 600;
         // Draw galaxy
-        for (var i = 0; i < this.galaxy.stars.length; i++) {
-            var star = this.galaxy.stars[i];
-            star.handleMovement();
-            if (star.checkBounds()) {
-                this.galaxy.stars.splice(i, 1);
-            }
-            star.draw(this.context);
-        }
+        this.galaxy.draw(this.context);
         // Draw players
         for (var i = 0; i < this.players.length; i++) {
             var player = this.players[i];
@@ -53,16 +44,6 @@
             }
             player.checkBounds();
             player.draw(this.context);
-        }
-        // Draw Asteroids
-        for (var i = 0; i < this.galaxy.asteroids.length; i++) {
-            var asteroid = this.galaxy.asteroids[i];
-            asteroid.handleMovement();
-            if (asteroid.checkBounds()) {
-                this.galaxy.asteroids.splice(i, 1);
-            }
-            
-            asteroid.draw(this.context);
         }
         // Draw lasers
         for (var i = 0; i < this.lasers.length; i++) {
