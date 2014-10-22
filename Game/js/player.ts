@@ -1,6 +1,6 @@
 ﻿class Player extends MovableObject implements DrawableObject {
     public health: number = 100;
-    public energy: number = 10000;
+    public energy: number = 100;
     public shield: number = 100;
 
     public maxSpeed = 7;

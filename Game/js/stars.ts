@@ -152,7 +152,8 @@ class Asteroid extends MovableObject implements CollisionObject, DrawableObject 
     private explodeIteration: number = 1;
     public explode(context: CanvasRenderingContext2D): boolean {
         this.disappearing = true;
-        context.drawImage(this.explodeImage, 1208 - (121 * this.explodeIteration), 1408 - 141/*(141 * this.explodeIteration)*/, 128, 141, this.xPosition, this.yPosition, 72, 72);
+        var bla: any = (this.explodeIteration / 10) ;
+        context.drawImage(this.explodeImage, 1280 - (128 * this.explodeIteration), 768, 128, 128, this.xPosition, this.yPosition, 72, 72);
         this.explodeIteration++;
         return this.explodeIteration == 10;
     }

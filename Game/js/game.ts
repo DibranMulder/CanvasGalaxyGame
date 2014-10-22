@@ -72,9 +72,9 @@
             torpedo.draw(this.context);
         }
         // Draw statuses
-        this.drawStatus(500, 20, 80, 20, "#FF0400", 100); // Health
-        this.drawStatus(500, 50, 80, 20, "#526CFF", 100); // Shield
-        this.drawStatus(500, 80, 80, 20, "#FFF700", 100); // Energy
+        this.drawStatus(500, 20, 80, 20, "#FF0400", player.health); // Health
+        this.drawStatus(500, 50, 80, 20, "#526CFF", player.shield); // Shield
+        this.drawStatus(500, 80, 80, 20, "#FFF700", player.energy); // Energy
 
         if (!quit) {
             requestAnimationFrame(this.gameLoop.bind(this));
