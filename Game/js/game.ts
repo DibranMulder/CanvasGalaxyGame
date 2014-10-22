@@ -71,9 +71,27 @@
             }
             torpedo.draw(this.context);
         }
+        // Draw statuses
+        this.drawStatus(500, 20, 80, 20, "#FF0400", 100); // Health
+        this.drawStatus(500, 50, 80, 20, "#526CFF", 100); // Shield
+        this.drawStatus(500, 80, 80, 20, "#FFF700", 100); // Energy
+
         if (!quit) {
             requestAnimationFrame(this.gameLoop.bind(this));
         }
+    }
+
+    private drawStatus(x: number, y: number, width: number, height: number, color: string, percentage: number) {
+        this.context.strokeStyle = "#FFFFFF";
+        this.context.beginPath();
+        this.context.moveTo(x, y);
+        this.context.lineTo(x + width, y);
+        this.context.lineTo(x + width, y + height);
+        this.context.lineTo(x, y + height);
+        this.context.lineTo(x, y);
+        this.context.stroke();
+        this.context.fillStyle = color;
+        this.context.fillRect(x + 1, y + 1, width - 2, height - 2);
     }
 
     public handleKeyPress(keyCode: number) {

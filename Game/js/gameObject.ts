@@ -57,6 +57,7 @@ class Torpedo extends MovableObject implements DrawableObject {
     }
 
     public draw(context: CanvasRenderingContext2D) {
+        context.save();
         context.globalCompositeOperation = "lighter";
         context.beginPath();
 
@@ -72,6 +73,7 @@ class Torpedo extends MovableObject implements DrawableObject {
 
         context.fillStyle = "#FF1900";
         context.fillRect(this.xPosition, this.yPosition, 1, 1);
+        context.restore();
     }
 
     public checkBounds(): boolean {
