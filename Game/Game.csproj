@@ -19,9 +19,11 @@
     <Content Include="css\app.css" />
     <Content Include="images\asteroid.png" />
     <Content Include="images\enterprise.png" />
+    <Content Include="images\explode.png" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="js\gameObject.ts" />
     <TypeScriptCompile Include="js\stars.ts" />
+    <TypeScriptCompile Include="js\player.ts" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>

@@ -61,6 +61,7 @@
             if (asteroid.checkBounds()) {
                 this.galaxy.asteroids.splice(i, 1);
             }
+            
             asteroid.draw(this.context);
         }
         // Draw lasers
@@ -69,6 +70,14 @@
             laser.handleMovement();
             if (laser.checkBounds()) {
                 this.lasers.splice(i, 1);
+            }
+            for (var g = 0; g < this.galaxy.asteroids.length; g++) {
+                if (laser.checkCollision(this.galaxy.asteroids[g])) {
+                    if (this.galaxy.asteroids[g].explode(this.context)) {
+                        this.galaxy.asteroids.splice(g, 1);
+                        this.lasers.splice(i, 1);
+                    }
+                }
             }
             laser.draw(this.context);
         }

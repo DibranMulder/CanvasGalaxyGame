@@ -66,16 +66,21 @@
 }
 
 class Asteroid extends MovableObject implements CollisionObject, DrawableObject {
-    public image: HTMLImageElement;
+    private asteroidImage: HTMLImageElement;
+    private explodeImage: HTMLImageElement;
 
     public radians: number = 0;
     private angle: number = 0;
 
+    public disappearing: boolean = false;
+
     constructor(xPosition: number, yPosition: number) {
         super(xPosition, yPosition, 72, 72);
         this.velY = 2;
-        this.image = new Image();
-        this.image.src = "images/asteroid.png";
+        this.asteroidImage = new Image();
+        this.asteroidImage.src = "images/asteroid.png";
+        this.explodeImage = new Image();
+        this.explodeImage.src = "images/explode.png";
     }
 
     public bumpRotation() {
@@ -86,14 +91,24 @@ class Asteroid extends MovableObject implements CollisionObject, DrawableObject 
     }
 
     public draw(context: CanvasRenderingContext2D) {
-        context.fillStyle = "#FF00D0";
-        context.fillRect(this.xPosition, this.yPosition, this.width, this.height);
-        this.bumpRotation();
-        context.save();
-        context.translate(this.xPosition + (this.width / 2), this.yPosition + (this.height / 2));
-        context.rotate(this.radians);
-        context.drawImage(this.image, 0, 0, this.width, this.height, -(this.width / 2), -(this.height / 2), this.width, this.height);
-        context.restore();
+        if (!this.disappearing) {
+            context.fillStyle = "#FF00D0";
+            context.fillRect(this.xPosition, this.yPosition, this.width, this.height);
+            this.bumpRotation();
+            context.save();
+            context.translate(this.xPosition + (this.width / 2), this.yPosition + (this.height / 2));
+            context.rotate(this.radians);
+            context.drawImage(this.asteroidImage, 0, 0, this.width, this.height, -(this.width / 2), -(this.height / 2), this.width, this.height);
+            context.restore();
+        }
+    }
+
+    private explodeIteration: number = 1;
+    public explode(context: CanvasRenderingContext2D): boolean {
+        this.disappearing = true;
+        context.drawImage(this.explodeImage, 1208 - (121 * this.explodeIteration), 1408 - 141/*(141 * this.explodeIteration)*/, 128, 141, this.xPosition, this.yPosition, 72, 72);
+        this.explodeIteration++;
+        return this.explodeIteration == 10;
     }
 }
 
