@@ -25,12 +25,30 @@
             player.handleMovement();
 
             for (var g = 0; g < this.galaxy.asteroids.length; g++) {
-                if (player.checkCollision(this.galaxy.asteroids[g])) {
-                    alert("Collision detected");
-                    player.health--;
+                if (!player.dealingDamage && player.checkCollision(this.galaxy.asteroids[g])) {
+                    if (player.dealDamage()) {
+                        alert("Game over");
+                        return;
+                    }
                 }
             }
             player.checkBounds();
+        }
+
+        for (var i = 0; i < this.bullets.length; i++) {
+            var bullet = this.bullets[i];
+            bullet.handleMovement();
+            if (bullet.checkBounds()) {
+                this.bullets.splice(i, 1);
+            }
+            for (var g = 0; g < this.galaxy.asteroids.length; g++) {
+                if (bullet.checkCollision(this.galaxy.asteroids[g])) {
+                    if (this.galaxy.asteroids[g].explode(this.context)) {
+                        this.galaxy.asteroids.splice(g, 1);
+                        this.bullets.splice(i, 1);
+                    }
+                }
+            }
         }
 
         setTimeout(() => {
@@ -50,20 +68,7 @@
         }
         // Draw bullets
         for (var i = 0; i < this.bullets.length; i++) {
-            var laser = this.bullets[i];
-            laser.handleMovement();
-            if (laser.checkBounds()) {
-                this.bullets.splice(i, 1);
-            }
-            for (var g = 0; g < this.galaxy.asteroids.length; g++) {
-                if (laser.checkCollision(this.galaxy.asteroids[g])) {
-                    if (this.galaxy.asteroids[g].explode(this.context)) {
-                        this.galaxy.asteroids.splice(g, 1);
-                        this.bullets.splice(i, 1);
-                    }
-                }
-            }
-            laser.draw(this.context);
+            this.bullets[i].draw(this.context);
         }
         // Draw statuses
         this.drawStatus(500, 20, 80, 20, "#FF0400", this.players[0].health); // Health
@@ -83,7 +88,7 @@
         this.context.lineTo(x, y);
         this.context.stroke();
         this.context.fillStyle = color;
-        this.context.fillRect(x + 1, y + 1, width - 2, height - 2);
+        this.context.fillRect(x + 1, y + 1, (width / 100 * percentage) - 2, height - 2);
     }
 
     public handleKeyPress(keyCode: number) {

@@ -6,10 +6,13 @@
     public maxSpeed = 7;
     public image: HTMLElement;
 
+    public dealingDamage: boolean;
+
     constructor(xPosition: number, yPosition: number, width: number, height: number) {
         super(xPosition, yPosition, width, height);
         this.velY = 0;
         this.velX = 0;
+        this.dealingDamage = false;
         this.image = document.getElementById("enterprise");
     }
 
@@ -38,6 +41,19 @@
         } else if (this.velY < 0) {
             this.velY += 0.25;
         }
+    }
+
+    public dealDamage(): boolean {
+        this.dealingDamage = true;
+        this.health -= 10;
+        if (this.health <= 0) {
+            return true;
+        }
+        setTimeout(() => {
+            this.dealingDamage = false;
+        }, 1000);
+
+        return false;
     }
 
     public draw(context: CanvasRenderingContext2D) {
