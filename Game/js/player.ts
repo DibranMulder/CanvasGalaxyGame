@@ -1,4 +1,4 @@
-﻿class Player extends MovableObject implements DrawableObject {
+﻿class Player extends MovableObject {
     public health: number = 100;
     public energy: number = 100;
     public shield: number = 100;

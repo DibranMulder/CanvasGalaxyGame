@@ -1,6 +1,6 @@
-﻿interface DrawableObject {
-    draw(context: CanvasRenderingContext2D);
-}
+﻿//interface DrawableObject {
+//    draw(context: CanvasRenderingContext2D);
+//}
 
 interface CollisionObject extends MovableObject {
     width: number;
@@ -43,9 +43,12 @@ class MovableObject {
         return false;
     }
 
+    public draw(context: CanvasRenderingContext2D) {
+        // Do nothing
+    }
 }
 
-class Torpedo extends MovableObject implements DrawableObject {
+class Torpedo extends MovableObject {
     public color: string;
     private radius: number;
 
@@ -82,9 +85,24 @@ class Torpedo extends MovableObject implements DrawableObject {
             (this.yPosition - this.radius) < 0 ||
             this.yPosition > (this.maxY - this.radius));
     }
+
+    public checkCollision(object: CollisionObject): boolean {
+        var distX = Math.abs(this.xPosition - object.xPosition - object.width / 2);
+        var distY = Math.abs(this.yPosition - object.yPosition - object.height / 2);
+
+        if (distX > (object.width / 2 + this.radius)) { return false; }
+        if (distY > (object.height / 2 + this.radius)) { return false; }
+
+        if (distX <= (object.width / 2)) { return true; }
+        if (distY <= (object.height / 2)) { return true; }
+
+        var dx = distX - object.width / 2;
+        var dy = distY - object.height / 2;
+        return (dx * dx + dy * dy <= (this.radius * this.radius));
+    }
 }
 
-class Laser extends MovableObject implements DrawableObject {
+class Laser extends MovableObject {
     public color: string;
     public height: number = 40;
     public width: number = 3;

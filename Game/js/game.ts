@@ -5,8 +5,7 @@
 
     public motionKeys: boolean[] = [];
 
-    public lasers: Laser[] = [];
-    public torpedos: Torpedo[] = [];
+    public bullets: MovableObject[] = [];
     public players: Player[] = [];
 
     private canvas: HTMLCanvasElement;
@@ -15,22 +14,11 @@
 
     constructor() {
         this.canvas = <HTMLCanvasElement> document.getElementById("world");
-        this.canvas.onclick = () => {
-            this.torpedos.push(this.players[0].fireTorpedo());
-        };
-
         this.context = this.canvas.getContext("2d");
         this.galaxy = new Galaxy();
     }
 
-    public gameLoop() {
-        var quit = false;
-        // Clear canvas
-        this.canvas.width = 600;
-        this.canvas.height = 600;
-        // Draw galaxy
-        this.galaxy.draw(this.context);
-        // Draw players
+    public movementLoop() {
         for (var i = 0; i < this.players.length; i++) {
             var player = this.players[i];
             player.handleKeys(this.motionKeys);
@@ -39,46 +27,50 @@
             for (var g = 0; g < this.galaxy.asteroids.length; g++) {
                 if (player.checkCollision(this.galaxy.asteroids[g])) {
                     alert("Collision detected");
-                    quit = true;
+                    player.health--;
                 }
             }
             player.checkBounds();
-            player.draw(this.context);
         }
-        // Draw lasers
-        for (var i = 0; i < this.lasers.length; i++) {
-            var laser = this.lasers[i];
+
+        setTimeout(() => {
+            this.movementLoop();
+        }, 16);
+    }
+
+    public drawLoop() {
+        // Clear canvas
+        this.canvas.width = 600;
+        this.canvas.height = 600;
+        // Draw galaxy
+        this.galaxy.draw(this.context);
+        // Draw players
+        for (var i = 0; i < this.players.length; i++) {
+            this.players[i].draw(this.context);
+        }
+        // Draw bullets
+        for (var i = 0; i < this.bullets.length; i++) {
+            var laser = this.bullets[i];
             laser.handleMovement();
             if (laser.checkBounds()) {
-                this.lasers.splice(i, 1);
+                this.bullets.splice(i, 1);
             }
             for (var g = 0; g < this.galaxy.asteroids.length; g++) {
                 if (laser.checkCollision(this.galaxy.asteroids[g])) {
                     if (this.galaxy.asteroids[g].explode(this.context)) {
                         this.galaxy.asteroids.splice(g, 1);
-                        this.lasers.splice(i, 1);
+                        this.bullets.splice(i, 1);
                     }
                 }
             }
             laser.draw(this.context);
         }
-        // Draw torpedos
-        for (var i = 0; i < this.torpedos.length; i++) {
-            var torpedo = this.torpedos[i];
-            torpedo.handleMovement();
-            if (torpedo.checkBounds()) {
-                this.torpedos.splice(i, 1);
-            }
-            torpedo.draw(this.context);
-        }
         // Draw statuses
-        this.drawStatus(500, 20, 80, 20, "#FF0400", player.health); // Health
-        this.drawStatus(500, 50, 80, 20, "#526CFF", player.shield); // Shield
-        this.drawStatus(500, 80, 80, 20, "#FFF700", player.energy); // Energy
+        this.drawStatus(500, 20, 80, 20, "#FF0400", this.players[0].health); // Health
+        this.drawStatus(500, 50, 80, 20, "#526CFF", this.players[0].shield); // Shield
+        this.drawStatus(500, 80, 80, 20, "#FFF700", this.players[0].energy); // Energy
 
-        if (!quit) {
-            requestAnimationFrame(this.gameLoop.bind(this));
-        }
+        requestAnimationFrame(this.drawLoop.bind(this));
     }
 
     private drawStatus(x: number, y: number, width: number, height: number, color: string, percentage: number) {
@@ -97,9 +89,9 @@
     public handleKeyPress(keyCode: number) {
         // Space
         if (keyCode == 32) {
-            this.torpedos.push(this.players[0].fireTorpedo());
+            this.bullets.push(this.players[0].fireTorpedo());
         } else if (keyCode == 13) {
-            this.lasers.push(this.players[0].fireLaser());
+            this.bullets.push(this.players[0].fireLaser());
         }
     }
 }
@@ -124,5 +116,6 @@ window.onload = function () {
         game.handleKeyPress(e.keyCode);
     });
 
-    game.gameLoop();
+    game.drawLoop();
+    game.movementLoop();
 };

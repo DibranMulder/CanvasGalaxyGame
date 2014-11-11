@@ -58,7 +58,7 @@
     private drawIteration: number = 0;
     public renderStars(additional: boolean) {
         for (var i = 0; i < this.numberOfGroups; i++) {
-            var x = Math.random() * 600;
+            var x = Math.random() * 599; // minus star width
             var y = Math.random() * 600;
             if (additional) {
                 y = y - 600;
@@ -66,7 +66,7 @@
             this.renderGroup(x, y);
         }
         for (var i = 0; i < this.numberOfAsteroids; i++) {
-            var x = Math.random() * 600;
+            var x = Math.random() * 528; // minus asteroid width
             var y = Math.random() * 600;
             if (additional) {
                 y = y - 600;
@@ -111,7 +111,7 @@
     }
 }
 
-class Asteroid extends MovableObject implements CollisionObject, DrawableObject {
+class Asteroid extends MovableObject implements CollisionObject {
     private asteroidImage: HTMLImageElement;
     private explodeImage: HTMLImageElement;
 
@@ -159,7 +159,7 @@ class Asteroid extends MovableObject implements CollisionObject, DrawableObject 
     }
 }
 
-class Star extends MovableObject implements DrawableObject {
+class Star extends MovableObject {
     constructor(xPosition: number, yPosition: number, public color: string) {
         super(xPosition, yPosition, 1, 1);
         this.velY = 1;
