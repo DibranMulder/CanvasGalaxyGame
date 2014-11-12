@@ -104,8 +104,6 @@ class Torpedo extends MovableObject {
 
 class Laser extends MovableObject {
     public color: string;
-    public height: number = 40;
-    public width: number = 3;
 
     constructor(xPosition: number, yPosition: number) {
         super(xPosition, yPosition, 3, 40);
@@ -116,5 +114,18 @@ class Laser extends MovableObject {
     public draw(context: CanvasRenderingContext2D) {
         context.fillStyle = this.color;
         context.fillRect(this.xPosition, this.yPosition - this.height, this.width, this.height);
+    }
+}
+
+class Cube extends MovableObject {
+    private cubeImage: HTMLElement;
+
+    constructor(xPosition: number, yPosition: number) {
+        super(xPosition, yPosition, 60, 60);
+        this.cubeImage = document.getElementById("cube");
+    }
+
+    public draw(context: CanvasRenderingContext2D) {
+        context.drawImage(this.cubeImage, this.xPosition, this.yPosition, this.width, this.height);
     }
 }

@@ -5,6 +5,7 @@
 
     public maxSpeed = 7;
     public image: HTMLElement;
+    public shieldImage: HTMLElement;
 
     public dealingDamage: boolean;
 
@@ -14,6 +15,7 @@
         this.velX = 0;
         this.dealingDamage = false;
         this.image = document.getElementById("enterprise");
+        this.shieldImage = document.getElementById("shield");
     }
 
     public handleKeys(keys: boolean[]) {
@@ -43,12 +45,24 @@
         }
     }
 
-    public dealDamage(): boolean {
+    public dealDamage(damage: number): boolean {
         this.dealingDamage = true;
-        this.health -= 10;
-        if (this.health <= 0) {
-            return true;
+        if (this.shield > 0) {
+            if (this.shield < damage) {
+                damage -= this.shield;
+                this.shield = 0;
+            } else {
+                this.shield -= damage;
+            }            
         }
+
+        if (this.shield <= 0) {
+            this.health -= damage;
+            if (this.health <= 0) {
+                return true;
+            }
+        }
+
         setTimeout(() => {
             this.dealingDamage = false;
         }, 1000);
@@ -58,6 +72,9 @@
 
     public draw(context: CanvasRenderingContext2D) {
         context.drawImage(this.image, this.xPosition, this.yPosition, this.width, this.height);
+        if (this.dealingDamage && this.shield > 0) {
+            context.drawImage(this.shieldImage, this.xPosition - 17, this.yPosition - 5, 60, 60);
+        }
     }
 
     public fireTorpedo(): Torpedo {

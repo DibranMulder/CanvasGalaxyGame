@@ -8,9 +8,6 @@
     private starsPerGroup = 20;
 
     public stars: Star[] = [];
-    public asteroids: Asteroid[] = [];
-
-    private numberOfAsteroids = 1;
 
     constructor() {
         this.renderStars(false);
@@ -65,14 +62,6 @@
             }
             this.renderGroup(x, y);
         }
-        for (var i = 0; i < this.numberOfAsteroids; i++) {
-            var x = Math.random() * 528; // minus asteroid width
-            var y = Math.random() * 600;
-            if (additional) {
-                y = y - 600;
-            }
-            this.renderAsteroid(x, y);
-        }
     }
 
     public draw(context: CanvasRenderingContext2D) {
@@ -91,23 +80,8 @@
                 star.draw(context);
             }
         }
-        for (var i = 0; i < this.asteroids.length; i++) {
-            var asteroid = this.asteroids[i];
-            asteroid.handleMovement();
-
-            if (asteroid.yPosition > 0) {
-                if (asteroid.checkBounds()) {
-                    this.asteroids.splice(i, 1);
-                }
-            }
-
-            asteroid.draw(context);
-        }
+        
         this.drawIteration++;
-    }
-
-    public renderAsteroid(x: number, y: number) {
-        this.asteroids.push(new Asteroid(x, y));
     }
 }
 
@@ -138,8 +112,8 @@ class Asteroid extends MovableObject implements CollisionObject {
 
     public draw(context: CanvasRenderingContext2D) {
         if (!this.disappearing) {
-            context.fillStyle = "#FF00D0";
-            context.fillRect(this.xPosition, this.yPosition, this.width, this.height);
+            //context.fillStyle = "#FF00D0";
+            //context.fillRect(this.xPosition, this.yPosition, this.width, this.height);
             this.bumpRotation();
             context.save();
             context.translate(this.xPosition + (this.width / 2), this.yPosition + (this.height / 2));

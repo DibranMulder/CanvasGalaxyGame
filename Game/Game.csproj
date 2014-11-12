@@ -18,8 +18,10 @@
   <ItemGroup>
     <Content Include="css\app.css" />
     <Content Include="images\asteroid.png" />
+    <Content Include="images\cube_small.png" />
     <Content Include="images\enterprise.png" />
     <Content Include="images\explode.png" />
+    <Content Include="images\small_shield.png" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="js\gameObject.ts" />
     <TypeScriptCompile Include="js\stars.ts" />
