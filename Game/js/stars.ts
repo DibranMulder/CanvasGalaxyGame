@@ -112,8 +112,6 @@ class Asteroid extends MovableObject implements CollisionObject {
 
     public draw(context: CanvasRenderingContext2D) {
         if (!this.disappearing) {
-            //context.fillStyle = "#FF00D0";
-            //context.fillRect(this.xPosition, this.yPosition, this.width, this.height);
             this.bumpRotation();
             context.save();
             context.translate(this.xPosition + (this.width / 2), this.yPosition + (this.height / 2));

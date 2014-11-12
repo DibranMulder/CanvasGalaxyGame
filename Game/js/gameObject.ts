@@ -34,11 +34,13 @@ class MovableObject {
     }
 
     public checkCollision(object: CollisionObject): boolean {
-        if (this.xPosition < object.xPosition + object.width &&
-            this.xPosition + this.width > object.xPosition &&
-            this.yPosition < object.yPosition + object.height &&
-            this.height + this.yPosition > object.yPosition) {
-            return true;
+        if (!object.disappearing) {
+            if (this.xPosition < object.xPosition + object.width &&
+                this.xPosition + this.width > object.xPosition &&
+                this.yPosition < object.yPosition + object.height &&
+                this.height + this.yPosition > object.yPosition) {
+                return true;
+            }
         }
         return false;
     }
@@ -117,15 +119,33 @@ class Laser extends MovableObject {
     }
 }
 
-class Cube extends MovableObject {
-    private cubeImage: HTMLElement;
+class Cube extends MovableObject implements CollisionObject {
+    private cubeImage: HTMLImageElement;
+    private explodeImage: HTMLImageElement;
+
+    public disappearing: boolean = false;
 
     constructor(xPosition: number, yPosition: number) {
         super(xPosition, yPosition, 60, 60);
-        this.cubeImage = document.getElementById("cube");
+        this.velY = 1;
+        this.cubeImage = new Image();
+        this.cubeImage.src = "images/cube_small.png";
+        this.explodeImage = new Image();
+        this.explodeImage.src = "images/explode.png";
     }
 
     public draw(context: CanvasRenderingContext2D) {
-        context.drawImage(this.cubeImage, this.xPosition, this.yPosition, this.width, this.height);
+        if (!this.disappearing) {
+            context.drawImage(this.cubeImage, this.xPosition, this.yPosition, this.width, this.height);
+        }
+    }
+
+    private explodeIteration: number = 1;
+    public explode(context: CanvasRenderingContext2D): boolean {
+        this.disappearing = true;
+        var bla: any = (this.explodeIteration / 10);
+        context.drawImage(this.explodeImage, 1280 - (128 * this.explodeIteration), 768, 128, 128, this.xPosition, this.yPosition, 60, 60);
+        this.explodeIteration++;
+        return this.explodeIteration == 10;
     }
 }

@@ -8,6 +8,7 @@
     public bullets: MovableObject[] = [];
     public players: Player[] = [];
     public asteroids: Asteroid[] = [];
+    public enemies: Cube[] = [];
 
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
@@ -22,10 +23,11 @@
         this.gameOver = false;
     }
 
-    public spawnEnemies(wave: number) {
-        this.renderAsteroid(wave * Math.random());
+    public spawnEnemies() {
+        this.renderAsteroid(5 * Math.random());
+        this.renderCube();
         setTimeout(() => {
-            this.spawnEnemies(++wave);
+            this.spawnEnemies();
         }, 2500);
     }
 
@@ -43,7 +45,27 @@
                     }
                 }
             }
+            for (var h = 0; h < this.enemies.length; h++) {
+                if (!player.dealingDamage && player.checkCollision(this.enemies[h])) {
+                    if (player.dealDamage(20)) {
+                        this.gameOver = true;
+                        return;
+                    }
+                }
+            }
+
             player.checkBounds();
+        }
+
+        for (var i = 0; i < this.enemies.length; i++) {
+            var enemy = this.enemies[i];
+            enemy.handleMovement();
+
+            if (enemy.yPosition > 0) {
+                if (enemy.checkBounds()) {
+                    this.enemies.splice(i, 1);
+                }
+            }
         }
 
         for (var i = 0; i < this.asteroids.length; i++) {
@@ -64,9 +86,19 @@
                 this.bullets.splice(i, 1);
             }
             for (var g = 0; g < this.asteroids.length; g++) {
-                if (bullet.checkCollision(this.asteroids[g])) {
-                    if (this.asteroids[g].explode(this.context)) {
+                var asteroid = this.asteroids[g];
+                if (bullet.checkCollision(asteroid)) {
+                    if (asteroid.explode(this.context)) {
                         this.asteroids.splice(g, 1);
+                        this.bullets.splice(i, 1);
+                    }
+                }
+            }
+            for (var h = 0; h < this.enemies.length; h++) {
+                var enemy = this.enemies[h];
+                if (bullet.checkCollision(enemy)) {
+                    if (enemy.explode(this.context)) {
+                        this.enemies.splice(h, 1);
                         this.bullets.splice(i, 1);
                     }
                 }
@@ -86,6 +118,12 @@
         }
     }
 
+    public renderCube() {
+        var x = Math.random() * 540; // minus cube width
+        var y = Math.random() * 600 - 600;
+        this.enemies.push(new Cube(x, y));
+    }
+
     public drawLoop() {
         // Clear canvas
         this.canvas.width = 600;
@@ -99,6 +137,10 @@
         // Draw asteroids
         for (var i = 0; i < this.asteroids.length; i++) {
             this.asteroids[i].draw(this.context);
+        }
+        // Draw enemies
+        for (var i = 0; i < this.enemies.length; i++) {
+            this.enemies[i].draw(this.context);
         }
         // Draw bullets
         for (var i = 0; i < this.bullets.length; i++) {
@@ -161,7 +203,7 @@ window.onload = function () {
         game.handleKeyPress(e.keyCode);
     });
 
-    game.spawnEnemies(1);
+    game.spawnEnemies();
     game.drawLoop();
     game.movementLoop();
 };
