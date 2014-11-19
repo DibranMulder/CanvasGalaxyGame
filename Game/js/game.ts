@@ -13,6 +13,7 @@
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
     private galaxy: Galaxy;
+    private galaxyBackground: HTMLElement;
 
     private gameOver: boolean;
 
@@ -20,9 +21,16 @@
         this.canvas = <HTMLCanvasElement> document.getElementById("world");
         this.context = this.canvas.getContext("2d");
         this.galaxy = new Galaxy();
+        this.galaxyBackground = document.getElementById("galaxy");
         this.gameOver = false;
     }
 
+    public startGame() {
+        this.spawnEnemies();
+        this.drawLoop();
+        this.movementLoop();
+    }
+    
     public spawnEnemies() {
         this.renderAsteroid(5 * Math.random());
         this.renderCube();
@@ -121,6 +129,7 @@
         this.canvas.width = 600;
         this.canvas.height = 600;
         // Draw galaxy
+        this.context.drawImage(this.galaxyBackground, 0, 0, 600, 600, 0, 0, 600, 600);
         this.galaxy.draw(this.context);
         // Draw players
         for (var i = 0; i < this.players.length; i++) {
@@ -175,12 +184,12 @@
     }
 }
 
-window.onload = function () {
-    var requestAnimationFrame = (<any>window).requestAnimationFrame ||
+window.document.body.onload = function () {
+    var tmpRequestAnimationFrame = (<any>window).requestAnimationFrame ||
         (<any>window).mozRequestAnimationFrame ||
         (<any>window).webkitRequestAnimationFrame ||
         (<any>window).msRequestAnimationFrame;
-    window.requestAnimationFrame = requestAnimationFrame;
+    window.requestAnimationFrame = tmpRequestAnimationFrame;
 
     var game = new Game();
     game.players.push(new Player(400, 400, 26, 50));
@@ -195,7 +204,10 @@ window.onload = function () {
         game.handleKeyPress(e.keyCode);
     });
 
-    game.spawnEnemies();
-    game.drawLoop();
-    game.movementLoop();
+    var menu = document.getElementById("menu");
+    var startBtn = document.getElementById("start-button");
+    startBtn.onclick = function () {
+        menu.style.display = "none";
+        game.startGame();
+    };
 };

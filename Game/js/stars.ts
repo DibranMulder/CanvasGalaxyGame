@@ -1,11 +1,11 @@
 ﻿class Galaxy {
     // The number of "star groups" to generate. 
-    private numberOfGroups = 100;
+    private numberOfGroups = 10;
     // The radius of the group of stars 
     private groupRadius = 100;
     private groupGravity = 2;
     // The number of stars per group. 
-    private starsPerGroup = 20;
+    private starsPerGroup = 15;
 
     public stars: Star[] = [];
 

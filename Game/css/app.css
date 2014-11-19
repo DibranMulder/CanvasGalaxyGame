@@ -10,7 +10,35 @@ span {
     width: 600px;
     height: 600px;
     border: 1px solid black;
-    background-color: black;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+}
+
+#menu {
+    left: 0px;
+    top: 0px;
+    width: 600px;
+    height: 600px;
+    position: absolute;
+    border: 1px solid black;
+    text-align: center;
+}
+
+#button-div {
+    text-align: center;
+}
+
+#menu span {
+    text-align: center;
+}
+
+#caption {
+    font-size: 20px;
+}
+
+#footer {
+    font-size: 10px;
 }
 
 img {

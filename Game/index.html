@@ -5,10 +5,6 @@
     <meta charset="utf-8" />
     <title>TypeScript HTML App</title>
     <link rel="stylesheet" href="css/app.css" type="text/css" />
-    <script src="js/gameObject.js"></script>
-    <script src="js/player.js"></script>
-    <script src="js/game.js"></script>
-    <script src="js/stars.js"></script>
 </head>
 <body>
     <canvas id="world"></canvas>
@@ -17,6 +13,20 @@
     <img id="cube" src="images/cube_small.png" />
     <img id="asteroid" src="images/asteroid.png" />
     <img id="explosion" src="images/explode.png" />
-    <p id="log"></p>
+    <img id="galaxy" src="images/space_background.jpg" />
+
+    <div id="menu">
+        <div id="button-div">
+            <p id="caption">SPACE TRIP</p>
+            <input id="start-button" type="button" value="START" />
+            <input id="hs-button" type="button" value="HIGHSCORES" />
+            <p id="footer">A game by Nimrod</p>
+        </div>
+    </div>
+
+    <script src="js/gameObject.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/stars.js"></script>
 </body>
 </html>
