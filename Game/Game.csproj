@@ -21,6 +21,9 @@
     <Content Include="images\cube_small.png" />
     <Content Include="images\enterprise.png" />
     <Content Include="images\explode.png" />
+    <Content Include="images\icons\energy-icon.png" />
+    <Content Include="images\icons\health-icon.png" />
+    <Content Include="images\icons\shield-icon.png" />
     <Content Include="images\small_shield.png" />
     <Content Include="images\space_background.jpg" />
     <Content Include="index.html" />

@@ -13,7 +13,11 @@
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
     private galaxy: Galaxy;
+    // Images
     private galaxyBackground: HTMLElement;
+    private energyIcon: HTMLElement;
+    private healthIcon: HTMLElement;
+    private shieldIcon: HTMLElement;
 
     private gameOver: boolean;
 
@@ -22,6 +26,9 @@
         this.context = this.canvas.getContext("2d");
         this.galaxy = new Galaxy();
         this.galaxyBackground = document.getElementById("galaxy");
+        this.energyIcon = document.getElementById("energy-icon");
+        this.healthIcon = document.getElementById("health-icon");
+        this.shieldIcon = document.getElementById("shield-icon");
         this.gameOver = false;
     }
 
@@ -148,9 +155,9 @@
             this.bullets[i].draw(this.context);
         }
         // Draw statuses
-        this.drawStatus(500, 20, 80, 20, "#FF0400", this.players[0].health); // Health
-        this.drawStatus(500, 50, 80, 20, "#526CFF", this.players[0].shield); // Shield
-        this.drawStatus(500, 80, 80, 20, "#FFF700", this.players[0].energy); // Energy
+        this.drawStatus(500, 20, 80, 20, "#FF0400", this.healthIcon, this.players[0].health); // Health
+        this.drawStatus(500, 50, 80, 20, "#526CFF", this.shieldIcon, this.players[0].shield); // Shield
+        this.drawStatus(500, 80, 80, 20, "#FFF700", this.energyIcon, this.players[0].energy); // Energy
 
         if (this.gameOver) {
             this.context.font = "30px Arial";
@@ -161,7 +168,7 @@
         }
     }
 
-    private drawStatus(x: number, y: number, width: number, height: number, color: string, percentage: number) {
+    private drawStatus(x: number, y: number, width: number, height: number, color: string, icon: HTMLElement, percentage: number) {
         this.context.strokeStyle = "#FFFFFF";
         this.context.beginPath();
         this.context.moveTo(x, y);
@@ -172,6 +179,7 @@
         this.context.stroke();
         this.context.fillStyle = color;
         this.context.fillRect(x + 1, y + 1, (width / 100 * percentage) - 2, height - 2);
+        this.context.drawImage(icon, x - 30, y, 20, 20); 
     }
 
     public handleKeyPress(keyCode: number) {
