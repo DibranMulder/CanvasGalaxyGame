@@ -61,10 +61,8 @@
             var enemy = this.enemies[i];
             enemy.handleMovement();
 
-            if (enemy.yPosition > 0) {
-                if (enemy.checkBounds()) {
-                    this.enemies.splice(i, 1);
-                }
+            if ((enemy.yPosition > 0 && enemy.checkBounds()) || (enemy.disappearing && enemy.bumpExplosion())) {
+                this.enemies.splice(i, 1);
             }
         }
 
@@ -72,10 +70,8 @@
             var asteroid = this.asteroids[i];
             asteroid.handleMovement();
 
-            if (asteroid.yPosition > 0) {
-                if (asteroid.checkBounds()) {
-                    this.asteroids.splice(i, 1);
-                }
+            if ((asteroid.yPosition > 0 && asteroid.checkBounds()) || (asteroid.disappearing && asteroid.bumpExplosion())) {
+                this.asteroids.splice(i, 1);
             }
         }
 
@@ -88,19 +84,15 @@
             for (var g = 0; g < this.asteroids.length; g++) {
                 var asteroid = this.asteroids[g];
                 if (bullet.checkCollision(asteroid)) {
-                    if (asteroid.explode(this.context)) {
-                        this.asteroids.splice(g, 1);
-                        this.bullets.splice(i, 1);
-                    }
+                    asteroid.explode(this.context);
+                    this.bullets.splice(i, 1);
                 }
             }
             for (var h = 0; h < this.enemies.length; h++) {
                 var enemy = this.enemies[h];
                 if (bullet.checkCollision(enemy)) {
-                    if (enemy.explode(this.context)) {
-                        this.enemies.splice(h, 1);
-                        this.bullets.splice(i, 1);
-                    }
+                    enemy.explode(this.context);
+                    this.bullets.splice(i, 1);
                 }
             }
         }

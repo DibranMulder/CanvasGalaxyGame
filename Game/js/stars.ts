@@ -110,6 +110,12 @@ class Asteroid extends MovableObject implements CollisionObject {
         this.radians = this.angle * TO_RADIANS;
     }
 
+    public bumpExplosion(): boolean {
+        this.explodeIteration++;
+        return this.explodeIteration == 10;
+    }
+
+    private explodeIteration: number = 1;
     public draw(context: CanvasRenderingContext2D) {
         if (!this.disappearing) {
             this.bumpRotation();
@@ -118,16 +124,14 @@ class Asteroid extends MovableObject implements CollisionObject {
             context.rotate(this.radians);
             context.drawImage(this.asteroidImage, 0, 0, this.width, this.height, -(this.width / 2), -(this.height / 2), this.width, this.height);
             context.restore();
+            return true;
+        } else {
+            context.drawImage(this.explodeImage, 1280 - (128 * this.explodeIteration), 768, 128, 128, this.xPosition, this.yPosition, 72, 72);
         }
     }
 
-    private explodeIteration: number = 1;
-    public explode(context: CanvasRenderingContext2D): boolean {
+    public explode(context: CanvasRenderingContext2D) {
         this.disappearing = true;
-        var bla: any = (this.explodeIteration / 10) ;
-        context.drawImage(this.explodeImage, 1280 - (128 * this.explodeIteration), 768, 128, 128, this.xPosition, this.yPosition, 72, 72);
-        this.explodeIteration++;
-        return this.explodeIteration == 10;
     }
 }
 

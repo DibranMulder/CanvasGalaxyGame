@@ -134,18 +134,22 @@ class Cube extends MovableObject implements CollisionObject {
         this.explodeImage.src = "images/explode.png";
     }
 
-    public draw(context: CanvasRenderingContext2D) {
-        if (!this.disappearing) {
-            context.drawImage(this.cubeImage, this.xPosition, this.yPosition, this.width, this.height);
-        }
+    public bumpExplosion(): boolean {
+        this.explodeIteration++;
+        return this.explodeIteration == 10;
     }
 
     private explodeIteration: number = 1;
-    public explode(context: CanvasRenderingContext2D): boolean {
+    public draw(context: CanvasRenderingContext2D): boolean {
+        if (!this.disappearing) {
+            context.drawImage(this.cubeImage, this.xPosition, this.yPosition, this.width, this.height);
+            return true;
+        } else {
+            context.drawImage(this.explodeImage, 1280 - (128 * this.explodeIteration), 768, 128, 128, this.xPosition, this.yPosition, 60, 60);
+        }
+    }
+    
+    public explode(context: CanvasRenderingContext2D) {
         this.disappearing = true;
-        var bla: any = (this.explodeIteration / 10);
-        context.drawImage(this.explodeImage, 1280 - (128 * this.explodeIteration), 768, 128, 128, this.xPosition, this.yPosition, 60, 60);
-        this.explodeIteration++;
-        return this.explodeIteration == 10;
     }
 }
