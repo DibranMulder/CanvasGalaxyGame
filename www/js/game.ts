@@ -1,8 +1,5 @@
 ﻿class Game
 {
-    public xBound: number = 600;
-    public yBound: number = 600;
-
     public motionKeys: boolean[] = [];
 
     public bullets: MovableObject[] = [];
@@ -21,8 +18,13 @@
 
     private gameOver: boolean;
 
+    public static xBound: number;
+    public static yBound: number;
+
     constructor() {
         this.canvas = <HTMLCanvasElement> document.getElementById("world");
+        Game.xBound = this.canvas.width = window.innerWidth;
+        Game.yBound = this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
         this.galaxy = new Galaxy();
         this.galaxyBackground = document.getElementById("galaxy");
@@ -39,7 +41,7 @@
     }
     
     public spawnEnemies() {
-        this.renderAsteroid(5 * Math.random());
+        this.renderAsteroid(3 * Math.random());
         this.renderCube();
         setTimeout(() => {
             this.spawnEnemies();
@@ -119,24 +121,23 @@
 
     public renderAsteroid(ammount: number) {
         for (var i = 0; i < ammount; i++) {
-            var x = Math.random() * 528; // minus asteroid width
-            var y = Math.random() * 600 - 600;
+            var x = Math.random() * (this.canvas.width - 72); // minus asteroid width
+            var y = (Math.random() * this.canvas.height) - this.canvas.height;
             this.asteroids.push(new Asteroid(x, y));
         }
     }
 
     public renderCube() {
         var x = Math.random() * 540; // minus cube width
-        var y = Math.random() * 600 - 600;
+        var y = (Math.random() * this.canvas.height) - this.canvas.height;
         this.enemies.push(new Cube(x, y));
     }
 
     public drawLoop() {
         // Clear canvas
-        this.canvas.width = 600;
-        this.canvas.height = 600;
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // Draw galaxy
-        this.context.drawImage(this.galaxyBackground, 0, 0, 600, 600, 0, 0, 600, 600);
+        this.context.drawImage(this.galaxyBackground, 0, 0, this.canvas.width, this.canvas.height, 0, 0, this.canvas.width, this.canvas.height);
         this.galaxy.draw(this.context);
         // Draw players
         for (var i = 0; i < this.players.length; i++) {

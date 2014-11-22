@@ -17,8 +17,8 @@ class MovableObject {
     constructor(public xPosition: number, public yPosition: number, public width: number, public height: number) {
         this.velX = 0;
         this.velY = 0;
-        this.maxX = 600 - this.width;
-        this.maxY = 600 - this.height;
+        this.maxX = Game.xBound - this.width;
+        this.maxY = Game.yBound - this.height;
     }
 
     public handleMovement() {

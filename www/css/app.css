@@ -7,9 +7,8 @@ span {
 }
 
 #world {
-    width: 600px;
-    height: 600px;
-    border: 1px solid black;
+    width: 100%;
+    height: 100%;
     left: 0px;
     top: 0px;
     position: absolute;
@@ -18,10 +17,9 @@ span {
 #menu {
     left: 0px;
     top: 0px;
-    width: 600px;
-    height: 600px;
+    width: 100%;
+    height: 100%;
     position: absolute;
-    border: 1px solid black;
     text-align: center;
 }
 

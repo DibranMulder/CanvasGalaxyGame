@@ -30,9 +30,7 @@
     <TypeScriptCompile Include="js\gameObject.ts" />
     <TypeScriptCompile Include="js\stars.ts" />
     <TypeScriptCompile Include="js\player.ts" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="js\game.ts" />
+	<TypeScriptCompile Include="js\game.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

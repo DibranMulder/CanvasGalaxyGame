@@ -90,7 +90,7 @@
         if (this.xPosition < 0) {
             this.xPosition = 0;
         } else {
-            var maxX = 600 - this.width;
+            var maxX = Game.xBound - this.width;
             if (this.xPosition > maxX) {
                 this.xPosition = maxX;
             }
@@ -99,7 +99,7 @@
         if (this.yPosition < 0) {
             this.yPosition = 0;
         } else {
-            var maxY = 600 - this.height;
+            var maxY = Game.yBound - this.height;
             if (this.yPosition > maxY) {
                 this.yPosition = maxY;
             }
