@@ -1,0 +1,31 @@
+Vessel:
+	Weapons:
+		1. Laser beams
+			a. straights forward
+			b. double laser beam
+			c. spreaded laser beam
+		2. torpedos
+	  		a. different classes
+		3. trackter beam
+	Shields:
+		1. Energy shields
+		2. Hall plating
+	Speed:
+		1. Engage into warp	
+
+Galaxy:
+	1. Planets
+	2. Debri
+	3. Nebula
+	4. Wormholes
+
+Controls:
+	1. Swiping left/up/right/down.
+	2. Tap is first weapon fire.
+	2. 2 finger tab is second weapon fire.
+
+Interface:
+	1. Star trek interface
+
+Additional ideas:
+	1. Fly to a planet and land on it using a smaller vessel.
